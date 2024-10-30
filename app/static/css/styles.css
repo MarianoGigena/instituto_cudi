@@ -1,0 +1,33 @@
+.titulo_principal {
+    text-align: center;
+}
+
+.botones_menu {
+    text-align: center;
+}
+
+.form-inline {
+    display: flex;
+    flex-direction: row;
+}
+
+.inactivo td {
+    background-color: #fa7250;
+    /* Fondo negro */
+    color: white;
+    /* Texto blanco */
+}
+
+.botones_jugadores {
+    display: flex;
+    flex-direction: row;
+
+}
+
+.botones_jugadores a {
+    margin: 5px;
+}
+
+.pago_avisado td {
+    background-color: darkkhaki;
+}

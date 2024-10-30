@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumnos</title>
+</head>
+
+<body>
+    {% extends "layout.html" %}
+    {% block content %}
+    <h1>Listado de Alumnos</h1>
+    <div class="table-responsive">
+
+        <table class="table table-bordered border-secondary table-striped">
+            <thead class="table-light">
+                <tr>
+                    <th>ID </th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>DNI</th>
+                    <th>Fecha Nacimiento</th>
+                    <th>Genero</th>
+
+                    <th>Acciones</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for alumno in alumnos %}
+                <tr class="">
+                    <td>{{ alumno[0] }}</td>
+                    <td>{{ alumno[1] }}</td>
+                    <td>{{ alumno[2] }}</td>
+                    <td>{{ alumno[3] }}</td>
+                    <td>{{ alumno[4] }}</td>
+                    <td>{{ alumno[5] }}</td>
+                    <td class="botones_jugadores">
+                        <a href=" /edit/{{ alumno[0] }}" class="btn btn-warning"><i class="fas fa-pencil-alt"></i></a>
+                        <!-- <a href="#" data-bs-toggle="modal" data-target="#confirmDeleteModal" data-id="{{ alumno[0] }}"
+                        class="btn btn-danger delete-btn">Eliminar</a> -->
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endblock content %}
+</body>
+
+</html>
