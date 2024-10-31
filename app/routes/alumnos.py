@@ -103,7 +103,7 @@ def delete(id_alumno_dni):
     conexion = obtener_conexion()
     cursor = conexion.cursor()
 
-    query = "DELETE FROM alumnos WHERE id_alumno = %s"
+    query = "DELETE FROM alumnos WHERE id_alumno_dni = %s"
     try:
         cursor.execute(query, (id_alumno_dni,))
         conexion.commit()
