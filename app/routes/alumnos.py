@@ -29,11 +29,18 @@ def edit(id_alumno_dni):
 
         fecha_nacimiento = request.form["fecha_nacimiento"]
         genero = request.form["genero"]
-        query = "UPDATE alumnos SET nombre = %s, apellido = %s, fecha_nacimiento = %s, genero = %s WHERE id_alumno_dni = %s"
+        query = "UPDATE alumnos SET id_alumno_dni=%s, nombre = %s, apellido = %s, fecha_nacimiento = %s, genero = %s WHERE id_alumno_dni = %s"
         try:
             cursor.execute(
                 query,
-                (nombre, apellido, fecha_nacimiento, genero, id_alumno_dni),
+                (
+                    id_alumno_dni,
+                    nombre,
+                    apellido,
+                    fecha_nacimiento,
+                    genero,
+                    id_alumno_dni,
+                ),
             )
             conexion.commit()
             flash(f"Alumno {nombre} {apellido}  editado exitosamente", "success")
