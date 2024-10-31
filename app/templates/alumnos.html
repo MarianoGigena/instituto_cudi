@@ -29,10 +29,10 @@
         <table class="table table-bordered border-secondary table-striped">
             <thead class="table-light">
                 <tr>
-                    <th>ID </th>
+                    <th>DNI</th>
                     <th>Nombre</th>
                     <th>Apellido</th>
-                    <th>DNI</th>
+
                     <th>Fecha Nacimiento</th>
                     <th>Genero</th>
 
@@ -48,18 +48,24 @@
                     <td>{{ alumno[2] }}</td>
                     <td>{{ alumno[3] }}</td>
                     <td>{{ alumno[4] }}</td>
-                    <td>{{ alumno[5] }}</td>
+
                     <td class="botones_jugadores">
-                        <button type="button" class="btn btn-warning edit-btn" data-toggle="modal"
-                            data-target="#editModal" data-id_alumno="{{ alumno[0] }}" data-nombre="{{ alumno[1] }}"
-                            data-apellido="{{ alumno[2] }}" data-dni="{{ alumno[3] }}"
-                            data-fecha_nacimiento="{{ alumno[4] }}" data-genero="{{ alumno[5] }}">
+                        <button title="Editar Alumno" type="button" class="btn btn-warning edit-btn" data-toggle="modal"
+                            data-target="#editModal" data-id_alumno_dni="{{ alumno[0] }}" data-nombre="{{ alumno[1] }}"
+                            data-apellido="{{ alumno[2] }}" data-fecha_nacimiento="{{ alumno[3] }}"
+                            data-genero="{{ alumno[4] }}">
                             <i class="fas fa-pencil-alt"></i>
                         </button>
-                        <button type="button" class="btn btn-danger delete-btn ms-2" data-toggle="modal"
-                            data-target="#deleteModal" data-id="{{ alumno[0] }}">
+                        <button title="Borrar Alumno" type="button" class="btn btn-danger delete-btn ms-2"
+                            data-toggle="modal" data-target="#deleteModal" data-id="{{ alumno[0] }}">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
+                        <button title="Inscribir a Materia" type="button" class="btn btn-success ms-2"
+                            data-toggle="modal" data-target="#inscribirModal" data-id_alumno_dni="{{ alumno[0] }}">
+                            <i class="fa-solid fa-school-circle-check fa-beat-fade"></i>
+                        </button>
+
+
                         <!--  <button data-bs-toggle="modal" data-target="#confirmDeleteModal" data-id="{{ alumno[0] }}"
                             class="btn btn-danger delete-btn ms-1"><i class="fa-solid fa-trash-can"></i>
                         </button> -->
@@ -83,7 +89,12 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <input type="hidden" name="id_alumno" id="edit-id_alumno">
+
+                        <div class="form-group">
+                            <label for="edit-nombre">DNI</label>
+                            <input type="number" class="form-control" name="id_alumno_dni" id="edit-id_alumno_dni">
+                        </div>
+
                         <div class="form-group">
                             <label for="edit-nombre">Nombre</label>
                             <input type="text" class="form-control" id="edit-nombre" name="nombre">
@@ -92,10 +103,7 @@
                             <label for="edit-apellido">Apellido</label>
                             <input type="text" class="form-control" id="edit-apellido" name="apellido">
                         </div>
-                        <div class="form-group">
-                            <label for="edit-dni">DNI</label>
-                            <input type="text" class="form-control" id="edit-dni" name="dni">
-                        </div>
+
                         <div class="form-group">
                             <label for="edit-fecha_nacimiento">Fecha de Nacimiento</label>
                             <input type="date" class="form-control" id="edit-fecha_nacimiento" name="fecha_nacimiento">
@@ -130,6 +138,11 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
+                            <label for="add-id_alumno_dni">DNI</label>
+                            <input type="number" class="form-control" id="add-id_alumno_dni" name="id_alumno_dni"
+                                required>
+                        </div>
+                        <div class="form-group">
                             <label for="add-nombre">Nombre</label>
                             <input type="text" class="form-control" id="add-nombre" name="nombre" required>
                         </div>
@@ -137,10 +150,7 @@
                             <label for="add-apellido">Apellido</label>
                             <input type="text" class="form-control" id="add-apellido" name="apellido" required>
                         </div>
-                        <div class="form-group">
-                            <label for="add-dni">DNI</label>
-                            <input type="text" class="form-control" id="add-dni" name="dni" required>
-                        </div>
+
                         <div class="form-group">
                             <label for="add-fecha_nacimiento">Fecha de Nacimiento</label>
                             <input type="date" class="form-control" id="add-fecha_nacimiento" name="fecha_nacimiento"
@@ -187,7 +197,47 @@
             </div>
         </div>
     </div>
+    <!-- Modal para inscripción -->
+    <div class="modal fade" id="inscribirModal" tabindex="-1" aria-labelledby="inscribirModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ url_for('cursos.inscribir') }}" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="inscribirModalLabel">Inscribir en una Materia</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Campo oculto para el ID del alumno -->
+                        <input type="hidden" id="alumnos_id_alumno_dni" name="alumnos_id_alumno_dni">
 
+                        <!-- Selección de materia -->
+                        <div class="form-group">
+                            <label for="materia">Seleccionar Materia</label>
+                            <select class="form-control" id="materia" name="materias_id_materia">
+                                {% for materia in materias %}
+                                <option value="{{ materia[0] }}">{{ materia[1] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <!-- Estado -->
+                        <div class="form-group">
+                            <label for="estado">Estado</label>
+                            <select class="form-control" id="estado" name="estado">
+                                <option value="regular">regular</option>
+                                <option value="libre">libre</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Inscribir</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>

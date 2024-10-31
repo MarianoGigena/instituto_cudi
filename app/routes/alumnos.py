@@ -10,27 +10,30 @@ def alumnos():
     cursor = conexion.cursor()
     cursor.execute("SELECT * FROM alumnos")
     alumnos = cursor.fetchall()
+    query = "SELECT id_materia, nombre FROM materias"
+    cursor.execute(query)
+    materias = cursor.fetchall()
     cursor.close()
     conexion.close()
-    return render_template("alumnos.html", alumnos=alumnos)
+    return render_template("alumnos.html", alumnos=alumnos, materias=materias)
 
 
-@alumnos_bp.route("/alumnos/edit/<int:id_alumno>", methods=["GET", "POST"])
-def edit(id_alumno):
+@alumnos_bp.route("/alumnos/edit/<int:id_alumno_dni>", methods=["GET", "POST"])
+def edit(id_alumno_dni):
     conexion = obtener_conexion()
     cursor = conexion.cursor()
     if request.method == "POST":
-        id_alumno = request.form["id_alumno"]
+        id_alumno_dni = request.form["id_alumno_dni"]
         nombre = request.form["nombre"]
         apellido = request.form["apellido"]
-        dni = request.form["dni"]
+
         fecha_nacimiento = request.form["fecha_nacimiento"]
         genero = request.form["genero"]
-        query = "UPDATE alumnos SET nombre = %s, apellido = %s, dni = %s, fecha_nacimiento = %s, genero = %s WHERE id_alumno = %s"
+        query = "UPDATE alumnos SET nombre = %s, apellido = %s, fecha_nacimiento = %s, genero = %s WHERE id_alumno_dni = %s"
         try:
             cursor.execute(
                 query,
-                (nombre, apellido, dni, fecha_nacimiento, genero, id_alumno),
+                (nombre, apellido, fecha_nacimiento, genero, id_alumno_dni),
             )
             conexion.commit()
             flash(f"Alumno {nombre} {apellido}  editado exitosamente", "success")
@@ -48,23 +51,30 @@ def edit(id_alumno):
 def add():
     conexion = obtener_conexion()
     cursor = conexion.cursor()
+    id_alumno_dni = request.form.get("id_alumno_dni")
     nombre = request.form.get("nombre")
     apellido = request.form.get("apellido")
-    dni = request.form.get("dni")
+
     fecha_nacimiento = request.form.get("fecha_nacimiento")
     genero = request.form.get("genero")
 
     # Verifica que los campos requeridos estén completos
-    if not nombre or not apellido or not dni or not fecha_nacimiento or not genero:
+    if (
+        not nombre
+        or not apellido
+        or not id_alumno_dni
+        or not fecha_nacimiento
+        or not genero
+    ):
         flash("Todos los campos son requeridos", "danger")
         return redirect(url_for("alumnos"))  # Redirecciona a la página de alumnos
 
     # Construye la consulta SQL para insertar el nuevo alumno
     query = """
-        INSERT INTO alumnos (nombre, apellido, dni, fecha_nacimiento, genero)
+        INSERT INTO alumnos (id_alumno_dni, nombre, apellido, fecha_nacimiento, genero)
         VALUES (%s, %s, %s, %s, %s)
     """
-    values = (nombre, apellido, dni, fecha_nacimiento, genero)
+    values = (id_alumno_dni, nombre, apellido, fecha_nacimiento, genero)
 
     # Ejecuta la consulta e inserta los datos en la base de datos
     try:
@@ -81,16 +91,16 @@ def add():
     return redirect(url_for("alumnos.alumnos"))  # Redirecciona a la página de alumnos
 
 
-@alumnos_bp.route("/alumnos/delete/<int:id_alumno>", methods=["POST"])
-def delete(id_alumno):
+@alumnos_bp.route("/alumnos/delete/<int:id_alumno_dni>", methods=["POST"])
+def delete(id_alumno_dni):
     conexion = obtener_conexion()
     cursor = conexion.cursor()
 
     query = "DELETE FROM alumnos WHERE id_alumno = %s"
     try:
-        cursor.execute(query, (id_alumno,))
+        cursor.execute(query, (id_alumno_dni,))
         conexion.commit()
-        flash(f"Alumno con id {id_alumno} eliminado exitosamente", "success")
+        flash(f"Alumno con id {id_alumno_dni} eliminado exitosamente", "success")
     except Exception as e:
         conexion.rollback()
         flash("Error al eliminar el alumno: " + str(e), "danger")

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profesores</title>
+</head>
+
+<body>
+    {% extends "layout.html" %}
+    {% block content %}
+    <h1 class="titulo_alumnos">Listado de Profesores</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for category, message in messages %}
+        <li class="alert alert-{{ category }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    <div class="boton_agregar_alumno">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">Agregar
+            profesor</button>
+    </div>
+    <div class="table-responsive">
+
+        <table class="table table-bordered border-secondary table-striped">
+            <thead class="table-light">
+                <tr>
+                    <th>DNI</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+
+
+                    <th>Materia</th>
+
+                    <th>Acciones</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for profesor in profesores %}
+                <tr class="">
+                    <td>{{ profesor[0] }}</td>
+                    <td>{{ profesor[1] }}</td>
+                    <td>{{ profesor[2] }}</td>
+                    <td>{{ profesor[3] }}</td>
+
+
+                    <td class="botones_jugadores">
+                        <button type="button" class="btn btn-warning edit-btn" data-toggle="modal"
+                            data-target="#editModal" data-id_profesor_dni="{{ profesor[0] }}"
+                            data-nombre="{{ profesor[1] }}" data-apellido="{{ profesor[2] }}"
+                            data-materia="{{ profesor[3] }}">
+                            <i class="fas fa-pencil-alt"></i>
+                        </button>
+                        <button type="button" class="btn btn-danger delete-btn ms-2" data-toggle="modal"
+                            data-target="#deleteModal" data-id="{{ profesor[0] }}">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                        <!--  <button data-bs-toggle="modal" data-target="#confirmDeleteModal" data-id="{{ profesor[0] }}"
+                            class="btn btn-danger delete-btn ms-1"><i class="fa-solid fa-trash-can"></i>
+                        </button> -->
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal para editar el Profesor -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="editForm" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Editar Profesor</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id_profesor_dni" id="edit-id_profesor_dni">
+                        <div class="form-group">
+                            <label for="edit-nombre">Nombre</label>
+                            <input type="text" class="form-control" id="edit-nombre" name="nombre">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-apellido">Apellido</label>
+                            <input type="text" class="form-control" id="edit-apellido" name="apellido">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit-materia">Materia</label>
+                            <select class="form-control" id="edit-materia" name="materia" required>
+                                <option value="" disabled selected>Selecciona la materia</option>
+                                {% for materia in materias %}
+                                <option value="{{ materia[0] }}">{{ materia[1] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Modal para agregar un nuevo profesor -->
+    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="addForm" action="/profesores/add" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addModalLabel">Agregar Profesor</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="form-group">
+                            <label for="edit-nombre">DNI</label>
+                            <input type="number" class="form-control" name="id_profesor_dni" id="edit-id_profesor_dni">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="add-nombre">Nombre</label>
+                            <input type="text" class="form-control" id="add-nombre" name="nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="add-apellido">Apellido</label>
+                            <input type="text" class="form-control" id="add-apellido" name="apellido" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="add-materia">Materia</label>
+                            <select class="form-control" id="add-materia" name="materia" required>
+                                <option value="" disabled selected>Selecciona la materia</option>
+                                {% for materia in materias %}
+                                <option value="{{ materia[0] }}">{{ materia[1] }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Agregar profesor</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmación de Eliminación -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="deleteForm" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Confirmar Eliminación</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ¿Estás seguro de que deseas eliminar este profesor?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/profesores.js') }}"></script>
+    {% endblock content %}
+</body>
+
+</html>

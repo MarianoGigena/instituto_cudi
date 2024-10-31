@@ -1,26 +1,34 @@
 
 // Script para pasar el ID al modal de eliminación
 $(document).on("click", ".delete-btn", function () {
-    var id_alumno = $(this).data("id");
-    $("#deleteForm").attr("action", "/alumnos/delete/" + id_alumno);
+    var id_alumno_dni = $(this).data("id");
+    $("#deleteForm").attr("action", "/alumnos/delete/" + id_alumno_dni);
 });
 
 // Script para pasar datos al modal de edición
 $(document).on("click", ".edit-btn", function () {
-    var id_alumno = $(this).data('id_alumno');
+    var id_alumno_dni = $(this).data('id_alumno_dni');
     var nombre = $(this).data('nombre');
     var apellido = $(this).data('apellido');
-    var dni = $(this).data('dni');
+
     var fecha_nacimiento = $(this).data('fecha_nacimiento');
     var genero = $(this).data('genero');
 
-    $("#edit-id_alumno").val(id_alumno);
+    $("#edit-id_alumno_dni").val(id_alumno_dni);
     $("#edit-nombre").val(nombre);
     $("#edit-apellido").val(apellido);
-    $("#edit-dni").val(dni);
+
     $("#edit-fecha_nacimiento").val(fecha_nacimiento);
     $("#edit-genero").val(genero);
 
     // Configurar la acción del formulario para incluir el ID del alumno
-    $("#editForm").attr("action", "/alumnos/edit/" + id_alumno);
+    $("#editForm").attr("action", "/alumnos/edit/" + id_alumno_dni);
+});
+
+$('#inscribirModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget);  // Botón que activó el modal
+    var idAlumno = button.data('id_alumno_dni');  // Extrae el ID del alumno
+
+    var modal = $(this);
+    modal.find('#alumnos_id_alumno_dni').val(idAlumno);  // Inserta el ID en el campo oculto
 });
