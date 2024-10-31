@@ -23,7 +23,7 @@ def edit(id_alumno_dni):
     conexion = obtener_conexion()
     cursor = conexion.cursor()
     if request.method == "POST":
-        id_alumno_dni = request.form["id_alumno_dni"]
+        id_alumno_dni_nuevo = request.form["id_alumno_dni"]
         nombre = request.form["nombre"]
         apellido = request.form["apellido"]
 
@@ -34,7 +34,7 @@ def edit(id_alumno_dni):
             cursor.execute(
                 query,
                 (
-                    id_alumno_dni,
+                    id_alumno_dni_nuevo,
                     nombre,
                     apellido,
                     fecha_nacimiento,
