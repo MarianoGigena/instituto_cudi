@@ -31,3 +31,44 @@
 .pago_avisado td {
     background-color: darkkhaki;
 }
+
+.close {
+    font-size: 1.5rem;
+    color: #555;
+    opacity: 0.8;
+    transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+.close:hover {
+    color: #d9534f;
+    opacity: 1;
+    cursor: pointer;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.titulo_alumnos {
+    text-align: center;
+}
+
+.boton_agregar_alumno {
+    display: flex;
+    justify-content: end;
+    margin-bottom: 3px;
+
+
+}
+
+.boton_agregar_alumno button {
+    border-radius: 10px;
+}
+
+.boton_agregar_alumno button:hover {
+    background-color: rgb(4, 94, 72);
+    color: white;
+
+}
