@@ -8,7 +8,9 @@ def create_app():
 
     from .routes.main import main
     from .routes.alumnos import alumnos_bp
+    from .routes.materias import materias_bp
 
+    app.register_blueprint(materias_bp)
     app.register_blueprint(main)
     app.register_blueprint(alumnos_bp)
     return app
