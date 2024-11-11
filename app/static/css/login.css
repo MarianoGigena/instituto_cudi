@@ -1,0 +1,13 @@
+body {
+    background-image: url(../img/cudi.jpg);
+}
+
+.container {
+    margin-top: 300px;
+    padding-bottom: 50px;
+    width: 380px;
+    background: linear-gradient(135deg, #a9a9f8, #95bbf8, #508ff4, #715df4);
+
+    opacity: 0.9;
+    border-radius: 20px;
+}

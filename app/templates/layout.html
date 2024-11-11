@@ -28,6 +28,7 @@
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            <img src="../static/img/logo.png" alt="logo">
             <a class="navbar-brand" href="{{ url_for('main.index') }}">Instituto Cudi</a>
 
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -57,8 +58,12 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Cerrar Sesión</a>
+                        <a class="nav-link" href="{{ url_for('main.logout') }}">Cerrar Sesión</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link">Usuario: {{ session['nombre'] }} - Rol: {{session['role']}}</a>
+                    </li>
+
 
                 </ul>
 

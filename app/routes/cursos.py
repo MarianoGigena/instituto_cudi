@@ -1,10 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from app.conexion_bd import obtener_conexion
+from .main import role_required
 
 cursos_bp = Blueprint("cursos", __name__)
 
 
 @cursos_bp.route("/cursos", methods=["GET", "POST"])
+@role_required("admin")
 def ver_cursos():
     conexion = obtener_conexion()
     cursor = conexion.cursor()
@@ -37,6 +39,7 @@ def ver_cursos():
 
 
 @cursos_bp.route("/cursos/inscribir", methods=["POST"])
+@role_required("admin")
 def inscribir():
     conexion = obtener_conexion()
     cursor = conexion.cursor()
@@ -67,6 +70,7 @@ def inscribir():
 @cursos_bp.route(
     "/cursos/calificar/<int:id_alumno_dni>/<int:id_materia>", methods=["GET", "POST"]
 )
+@role_required("admin")
 def calificar(id_alumno_dni, id_materia):
     if request.method == "POST":
         conexion = obtener_conexion()
@@ -105,6 +109,7 @@ def calificar(id_alumno_dni, id_materia):
 @cursos_bp.route(
     "/cursos/calificar2/<int:id_alumno_dni>/<int:id_materia>", methods=["GET", "POST"]
 )
+@role_required("admin")
 def calificar2(id_alumno_dni, id_materia):
     if request.method == "POST":
         conexion = obtener_conexion()
@@ -143,6 +148,7 @@ def calificar2(id_alumno_dni, id_materia):
     "/cursos/actualizar_nota_final/<int:id_alumno_dni>/<int:id_materia>",
     methods=["POST"],
 )
+@role_required("admin")
 def actualizar_nota_final(id_alumno_dni, id_materia):
     conexion = obtener_conexion()
     cursor = conexion.cursor()

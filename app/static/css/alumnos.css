@@ -1,0 +1,10 @@
+body {
+    background-image: url(../img/cudi.jpg);
+}
+
+.titulo_alumnos {
+    margin-top: 120px;
+    background-color: black;
+    color: white;
+    border-radius: 15px;
+}

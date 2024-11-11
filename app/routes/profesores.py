@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from app.conexion_bd import obtener_conexion
+from .main import role_required
 
 profesores_bp = Blueprint("profesores", __name__)
 
@@ -23,6 +24,7 @@ def profesores():
 
 
 @profesores_bp.route("/profesores/add", methods=["POST"])
+@role_required("admin")
 def add():
     conexion = obtener_conexion()
     cursor = conexion.cursor()
@@ -60,6 +62,7 @@ def add():
 
 
 @profesores_bp.route("/profesores/edit/<int:id_profesor_dni>", methods=["GET", "POST"])
+@role_required("admin")
 def edit(id_profesor_dni):
     conexion = obtener_conexion()
     cursor = conexion.cursor()
@@ -88,6 +91,7 @@ def edit(id_profesor_dni):
 
 
 @profesores_bp.route("/profesores/delete/<int:id_profesor_dni>", methods=["POST"])
+@role_required("admin")
 def delete(id_profesor_dni):
     conexion = obtener_conexion()
     cursor = conexion.cursor()
