@@ -11,10 +11,12 @@ def create_app():
     from .routes.materias import materias_bp
     from .routes.profesores import profesores_bp
     from .routes.cursos import cursos_bp
+    from .routes.admin import admin_bp
 
     app.register_blueprint(cursos_bp)
     app.register_blueprint(profesores_bp)
     app.register_blueprint(materias_bp)
     app.register_blueprint(main)
     app.register_blueprint(alumnos_bp)
+    app.register_blueprint(admin_bp)
     return app

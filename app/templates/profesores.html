@@ -4,13 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profesores.css') }}">
+
     <title>Profesores</title>
 </head>
 
 <body>
     {% extends "layout.html" %}
     {% block content %}
-    <h1 class="titulo_alumnos">Listado de Profesores</h1>
+    <h1 class="titulo_profesores">Listado de Profesores</h1>
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     <ul class="flashes">
@@ -70,7 +72,32 @@
             </tbody>
         </table>
     </div>
-
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for profesor in profesores %}
+        <div class="col">
+            <div class="card h-100 border-secondary">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Profesor: {{ profesor[1] }} {{ profesor[2] }}</h5>
+                    <p class="card-text">
+                        <strong>DNI:</strong> {{ profesor[0] }} <br>
+                        <strong>Materia:</strong> {{ profesor[3] }}
+                    </p>
+                </div>
+                <div class="card-footer text-center">
+                    <button type="button" class="btn btn-warning edit-btn" data-toggle="modal" data-target="#editModal"
+                        data-id_profesor_dni="{{ profesor[0] }}" data-nombre="{{ profesor[1] }}"
+                        data-apellido="{{ profesor[2] }}" data-materia="{{ profesor[3] }}">
+                        <i class="fas fa-pencil-alt"></i> Editar
+                    </button>
+                    <button type="button" class="btn btn-danger delete-btn ms-2" data-toggle="modal"
+                        data-target="#deleteModal" data-id="{{ profesor[0] }}">
+                        <i class="fa-solid fa-trash-can"></i> Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
     <!-- Modal para editar el Profesor -->
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog">

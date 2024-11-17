@@ -6,6 +6,7 @@ alumnos_bp = Blueprint("alumnos", __name__)
 
 
 @alumnos_bp.route("/alumnos", methods=["GET"])
+@role_required("admin", "invitado", "user")
 def alumnos():
     conexion = obtener_conexion()
     cursor = conexion.cursor()

@@ -6,7 +6,7 @@ cursos_bp = Blueprint("cursos", __name__)
 
 
 @cursos_bp.route("/cursos", methods=["GET", "POST"])
-@role_required("admin")
+@role_required("admin", "invitado", "user")
 def ver_cursos():
     conexion = obtener_conexion()
     cursor = conexion.cursor()
@@ -29,13 +29,15 @@ def ver_cursos():
         JOIN 
             materias ON cursos.materias_id_materia = materias.id_materia;
     """
+    cursor.execute("SELECT DISTINCT nombre FROM materias")
+    materias = [row[0] for row in cursor.fetchall()]
 
     cursor.execute(query)
 
     cursos = cursor.fetchall()
     cursor.close()
     conexion.close()
-    return render_template("cursos.html", cursos=cursos)
+    return render_template("cursos.html", cursos=cursos, materias=materias)
 
 
 @cursos_bp.route("/cursos/inscribir", methods=["POST"])
@@ -185,4 +187,112 @@ def actualizar_nota_final(id_alumno_dni, id_materia):
     finally:
         cursor.close()
         conexion.close()
+    return redirect(url_for("cursos.ver_cursos"))
+
+
+@cursos_bp.route("/cursos/filtros", methods=["GET", "POST"])
+@role_required("admin")
+def filtros():
+    conexion = obtener_conexion()
+    cursor = conexion.cursor()
+    dni = request.args.get("dni", "")
+    apellido = request.args.get("apellido", "")
+    materia = request.args.get("materia", "")
+
+    print(f"Filtros recibidos: DNI={dni}, Apellido={apellido}, Materia={materia}")
+
+    query = """
+        SELECT 
+            cursos.alumnos_id_alumno_dni, 
+            alumnos.nombre AS alumno_nombre,
+            alumnos.apellido AS alumno_apellido,
+            materias.nombre AS materia_nombre,
+            cursos.estado,
+            cursos.parcial_1,
+            cursos.parcial_2,
+            cursos.nota_final,
+            cursos.materias_id_materia
+        FROM 
+            cursos
+        JOIN 
+            alumnos ON cursos.alumnos_id_alumno_dni = alumnos.id_alumno_dni
+        JOIN 
+            materias ON cursos.materias_id_materia = materias.id_materia
+        WHERE 1=1
+    """
+    params = []
+
+    if dni:
+        query += " AND cursos.alumnos_id_alumno_dni LIKE %s"
+        params.append(f"%{dni}%")
+    if apellido:
+        query += " AND alumnos.apellido LIKE %s"
+        params.append(f"%{apellido}%")
+    if materia:
+        query += " AND materias.nombre LIKE %s"
+        params.append(f"%{materia}%")
+
+    print(f"Consulta generada: {query} con parámetros {params}")
+
+    try:
+        cursor.execute(query, params)
+        cursos = cursor.fetchall()
+        cursor.execute("SELECT DISTINCT nombre FROM materias")
+        materias = [row[0] for row in cursor.fetchall()]
+        print(f"Resultados encontrados: {cursos}")
+    except Exception as e:
+        print(f"Error en la consulta: {e}")
+        cursos = []
+    finally:
+        cursor.close()
+        conexion.close()
+    return render_template("cursos.html", cursos=cursos, materias=materias)
+
+
+@cursos_bp.route("/cursos/eliminar_curso", methods=["POST"])
+def eliminar_curso():
+    # Captura el ID del usuario desde el formulario
+    id_alumno = request.form.get("id_alumno_dni")
+    id_materia = request.form.get("id_materia")
+    materia = request.form.get("materia")
+    print(f"id de usuario{request.form}")
+    # Validar que el ID no esté vacío
+    if not id_alumno or not id_materia:
+        flash("El ID del usuario es obligatorio para eliminarlo.", "danger")
+        return redirect(url_for("cursos.ver_cursos"))
+
+    # Conexión a la base de datos
+    conexion = obtener_conexion()
+    cursor = conexion.cursor()
+
+    try:
+        # Consulta SQL para eliminar el usuario
+        print(f"id {id_alumno}")
+        query = "DELETE FROM cursos WHERE alumnos_id_alumno_dni = %s and materias_id_materia = %s"
+        cursor.execute(
+            query,
+            (
+                id_alumno,
+                id_materia,
+            ),
+        )
+        conexion.commit()
+
+        # Verificar si se eliminó algún registro
+        if cursor.rowcount == 0:
+            flash("No se encontró ningún curso con ese ID.", "warning")
+        else:
+            flash(
+                f"Curso {id_alumno} {id_materia} {materia} eliminado exitosamente.",
+                "success",
+            )
+    except Exception as err:
+        # Manejo de errores
+        print(f"Error: {err}")
+        flash("Hubo un error al eliminar el curso.", "danger")
+    finally:
+        cursor.close()
+        conexion.close()
+
+    # Redirigir al panel de administración
     return redirect(url_for("cursos.ver_cursos"))

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_panel.css') }}">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSkt90P3aU9NQK2XDE3H7n60MbLZZPV5+6Fw8rJGlsw" crossorigin="anonymous">
+
+    <title>Panel de administración</title>
+</head>
+
+<body>
+
+    {% extends "layout.html" %}
+    {% block content %}
+    <h1 class="titulo_admin">Panel de administración</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for category, message in messages %}
+        <li class="alert alert-{{ category }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for usuario in usuarios %}
+        <div class="col">
+            <div class="card h-100 border-secondary">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Usuario: {{ usuario[1] }}</h5>
+                    <p class="card-text">
+                        <strong>ID:</strong> {{ usuario[0] }} <br>
+                        <strong>Rol:</strong> {{ usuario[3] }}
+                    </p>
+                </div>
+                <div class="card-footer text-center">
+                    <!-- Botón para editar usuario -->
+                    <button type="button" class="btn btn-warning edit-btn" data-toggle="modal" data-target="#editModal"
+                        data-id_usuario="{{ usuario[0] }}" data-nombre="{{ usuario[1] }}"
+                        data-password="{{ usuario[2] }}" data-role="{{ usuario[3] }}">
+                        <i class="fas fa-pencil-alt"></i> Editar
+                    </button>
+                    <!-- Botón para eliminar usuario -->
+                    <button type="button" class="btn btn-danger delete-btn ms-2" data-toggle="modal"
+                        data-target="#deleteModal" data-id_usuario="{{ usuario[0] }}">
+                        <i class="fa-solid fa-trash-can"></i> Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Modal de Editar Usuario -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editUserModalLabel">Editar Usuario</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="POST" action="{{ url_for('admin.editar_usuario') }}">
+                    <div class="modal-body">
+                        <input type="hidden" id="edit-id" name="id_usuario">
+                        <div class="form-group">
+                            <label for="edit-nombre">Nombre:</label>
+                            <input type="text" class="form-control" id="edit-nombre" name="nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-password">Contraseña:</label>
+                            <input type="password" class="form-control" id="edit-password" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-role">Rol:</label>
+                            <select class="form-control" id="edit-role" name="role" required>
+                                <option value="admin">Admin</option>
+                                <option value="user">Usuario</option>
+                                <option value="invitado">Invitado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Modal de Eliminar Usuario -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteUserModalLabel">Eliminar Usuario</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="POST" action="{{ url_for('admin.eliminar_usuario') }}">
+                    <div class="modal-body">
+                        <input type="hidden" id="delete-id" name="id_usuario">
+                        <p>¿Estás seguro de que deseas eliminar este usuario?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Llenar el modal de edición con los datos del usuario
+        document.querySelectorAll('.edit-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const userId = this.dataset.id_usuario;
+                const userName = this.dataset.nombre;
+                const userPassword = this.dataset.password;
+                const userRole = this.dataset.role;
+
+                document.getElementById('edit-id').value = userId;
+                document.getElementById('edit-nombre').value = userName;
+                document.getElementById('edit-password').value = userPassword;
+                document.getElementById('edit-role').value = userRole;
+            });
+        });
+
+        // Llenar el modal de eliminación con el ID del usuario
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', function () {
+                const userId = this.dataset.id_usuario;
+                document.getElementById('delete-id').value = userId;
+            });
+        });
+    </script>
+
+
+
+    {% endblock %}
+</body>
+
+</html>

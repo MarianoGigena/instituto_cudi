@@ -6,6 +6,7 @@ materias_bp = Blueprint("materias", __name__)
 
 
 @materias_bp.route("/materias", methods=["GET"])
+@role_required("admin", "invitado", "user")
 def materias():
     conexion = obtener_conexion()
     cursor = conexion.cursor()

@@ -63,7 +63,12 @@
                     <li class="nav-item">
                         <a class="nav-link">Usuario: {{ session['nombre'] }} - Rol: {{session['role']}}</a>
                     </li>
-
+                    <!-- Mostrar este enlace solo si el usuario es admin -->
+                    {% if session.get('role') == 'admin' %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.admin_panel') }}">Panel de Admin</a>
+                    </li>
+                    {% endif %}
 
                 </ul>
 

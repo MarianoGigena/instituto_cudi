@@ -1,0 +1,18 @@
+body {
+    background-image: url(../img/cudi.jpg);
+}
+
+.titulo_cursos {
+    margin-top: 120px;
+    background-color: black;
+    color: white;
+    border-radius: 15px;
+    text-align: center;
+}
+
+.form-label {
+    background-color: black;
+    color: white;
+    border-radius: 10px;
+    padding: 5px;
+}
