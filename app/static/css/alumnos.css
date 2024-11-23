@@ -5,7 +5,17 @@ body {
 
 .titulo_alumnos {
     margin-top: 120px;
-    background-color: black;
+    background-color: #212529;
     color: white;
     border-radius: 15px;
+}
+
+#btn-dni,
+#btn-apellido,
+#btn-genero,
+#btn-fecha_nacimiento {
+    color: black;
+    font-weight: bold;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
 }

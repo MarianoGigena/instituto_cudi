@@ -13,7 +13,8 @@ def profesores():
     cursor.execute(
         """SELECT profesores.id_profesor_dni, profesores.nombre, profesores.apellido, materias.nombre, materias.id_materia
         FROM profesores
-        INNER JOIN materias ON profesores.materias_id_materia = materias.id_materia ORDER BY materias.nombre asc"""
+        INNER JOIN materias ON profesores.materias_id_materia = materias.id_materia WHERE profesores.estado <> 'inactivo' 
+        OR profesores.estado IS NULL ORDER BY materias.nombre asc"""
     )
     profesores = cursor.fetchall()
     query = "SELECT id_materia, nombre FROM materias"
@@ -34,7 +35,7 @@ def add():
     apellido = request.form.get("apellido")
 
     materia = request.form.get("materia")
-
+    estado = "activo"
     # Verifica que los campos requeridos estén completos
     if not nombre or not apellido or not materia:
         flash("Todos los campos son requeridos", "danger")
@@ -42,10 +43,10 @@ def add():
 
     # Construye la consulta SQL para insertar el nuevo alumno
     query = """
-        INSERT INTO profesores (id_profesor_dni, nombre, apellido, materias_id_materia)
+        INSERT INTO profesores (id_profesor_dni, nombre, apellido, materias_id_materia, estado)
         VALUES (%s, %s, %s, %s)
     """
-    values = (id_profesor_dni, nombre, apellido, materia)
+    values = (id_profesor_dni, nombre, apellido, materia, estado)
 
     # Ejecuta la consulta e inserta los datos en la base de datos
     try:
@@ -97,7 +98,7 @@ def delete(id_profesor_dni):
     conexion = obtener_conexion()
     cursor = conexion.cursor()
 
-    query = "DELETE FROM profesores WHERE id_profesor_dni = %s"
+    query = "UPDATE profesores SET estado = 'inactivo' WHERE id_profesor_dni = %s"
     try:
         cursor.execute(query, (id_profesor_dni,))
         conexion.commit()

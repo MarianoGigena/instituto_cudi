@@ -5,14 +5,14 @@ body {
 
 .titulo_cursos {
     margin-top: 120px;
-    background-color: black;
+    background-color: #212529;
     color: white;
     border-radius: 15px;
     text-align: center;
 }
 
 .form-label {
-    background-color: black;
+    background-color: #212529;
     color: white;
     border-radius: 10px;
     padding: 5px;

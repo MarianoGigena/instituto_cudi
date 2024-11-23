@@ -29,15 +29,18 @@
     </div>
     <div class="table-responsive">
 
-        <table class="table table-bordered border-secondary table-striped">
+        <table id="tablaAlumnos" class="table table-bordered border-secondary table-striped">
             <thead class="table-light">
                 <tr>
-                    <th>DNI</th>
+                    <th> <button onclick="ordenarTabla(0)" id="btn-dni" class="btn btn-link">DNI</button></th>
                     <th>Nombre</th>
-                    <th>Apellido</th>
+                    <th> <button onclick="ordenarTabla(2)" id="btn-apellido" class="btn btn-link">Apellidos</button>
+                    </th>
 
-                    <th>Fecha Nacimiento</th>
-                    <th>Genero</th>
+                    <th> <button onclick="ordenarTabla(3)" id="btn-fecha_nacimiento" class="btn btn-link">Fecha
+                            Nacimiento</button>
+                    </th>
+                    <th> <button onclick="ordenarTabla(4)" id="btn-genero" class="btn btn-link">Genero</button></th>
 
                     <th>Acciones</th>
 
@@ -275,7 +278,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/inscripcion.js') }}"></script>
     <script src="{{ url_for('static', filename='js/alumnos.js') }}"></script>
-
+    <script src="{{ url_for('static', filename='js/orden_alumnos.js') }}"></script>
 
     {% endblock content %}
 </body>

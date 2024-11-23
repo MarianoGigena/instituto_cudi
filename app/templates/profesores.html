@@ -27,7 +27,7 @@
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">Agregar
             profesor</button>
     </div>
-    <div class="table-responsive">
+    <!--  <div class="table-responsive">
 
         <table class="table table-bordered border-secondary table-striped">
             <thead class="table-light">
@@ -64,16 +64,14 @@
                             data-target="#deleteModal" data-id="{{ profesor[0] }}">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
-                        <!--  <button data-bs-toggle="modal" data-target="#confirmDeleteModal" data-id="{{ profesor[0] }}"
-                            class="btn btn-danger delete-btn ms-1"><i class="fa-solid fa-trash-can"></i>
-                        </button> -->
+                      
 
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-    </div>
+    </div> -->
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         {% for profesor in profesores %}
         <div class="col">
