@@ -153,16 +153,23 @@
 
                         <div class="form-group">
                             <label for="edit-nombre">DNI</label>
-                            <input type="number" class="form-control" name="id_profesor_dni" id="edit-id_profesor_dni">
+                            <input type="text" class="form-control" name="id_profesor_dni" id="edit-id_profesor_dni"
+                                required minlength="7" maxlength="9" pattern="^\d{7,9}$"
+                                title="El DNI debe contener entre 7 y 9 dígitos numéricos">
                         </div>
 
                         <div class="form-group">
                             <label for="add-nombre">Nombre</label>
-                            <input type="text" class="form-control" id="add-nombre" name="nombre" required>
+                            <input type="text" class="form-control" id="add-nombre" name="nombre" required
+                                maxlength="30" minlength="2" pattern="^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$"
+                                title="El nombre solo puede contener letras y espacios, y debe tener como máximo 30 caracteres.">
                         </div>
                         <div class="form-group">
                             <label for="add-apellido">Apellido</label>
-                            <input type="text" class="form-control" id="add-apellido" name="apellido" required>
+                            <input type="text" class="form-control" id="add-apellido" name="apellido" maxlength="30"
+                                minlength="2" pattern="^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$"
+                                title="El apellido solo puede contener letras y espacios, y debe tener como máximo 30 caracteres."
+                                required>
                         </div>
 
                         <div class="form-group">

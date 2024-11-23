@@ -51,10 +51,10 @@ main = Blueprint("main", __name__)
 @main.route("/")
 def index():
     if session:
-        logout()
+        pass
     else:
         pass
-    return render_template("login.html")
+    return render_template("index.html")
 
 
 @main.route("/login", methods=["GET", "POST"])
@@ -84,7 +84,7 @@ def login():
             session["role"] = user["role"]
 
             flash("Inicio de sesión exitoso.", "success")
-            return redirect(url_for("alumnos.alumnos"))
+            return redirect(url_for("main.index"))
         else:
             flash("Usuario o contraseña incorrectos.", "danger")
 

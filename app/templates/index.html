@@ -4,12 +4,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
     <title>Pagina de inicio</title>
 </head>
 
 <body>
-    <h1>Pagina Inicial</h1>
-    <a href="{{ url_for('alumnos.alumnos') }}">Alumnos</a>
+    {% extends "layout.html" %}
+    {% block content %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul class="flashes">
+        {% for category, message in messages %}
+        <li class="alert alert-{{ category }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+    <div class="iframe-container ratio-16x9">
+        <iframe src="https://www.cudi.ar/player-embed/id/2257/"
+            title="Centro Universitario de la Innovación de La Matanza" width="560" height="315" frameborder="0"
+            scrolling="no"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen></iframe>
+    </div>
+
+    {% endblock content %}
 </body>
 
 </html>

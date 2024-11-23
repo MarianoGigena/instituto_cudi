@@ -24,23 +24,40 @@
     <div class="container mt-4">
         <!-- Filtros -->
         <form method="GET" action="{{ url_for('cursos.filtros') }}">
-            <div class="row mb-3">
+            <div class="row align-items-end mb-3">
                 <!-- Filtro por DNI -->
-                <div class="col-md-4">
+                <div class="col-auto">
                     <label for="dni" class="form-label">DNI:</label>
                     <input type="text" name="dni" id="dni" class="form-control" placeholder="Ingrese DNI"
                         value="{{ request.args.get('dni', '') }}">
                 </div>
 
                 <!-- Filtro por Apellido -->
-                <div class="col-md-4">
+                <div class="col-auto">
                     <label for="apellido" class="form-label">Apellido:</label>
                     <input type="text" name="apellido" id="apellido" class="form-control" placeholder="Ingrese Apellido"
                         value="{{ request.args.get('apellido', '') }}">
                 </div>
 
+                <!-- Filtro por Estado -->
+                <div class="col-auto">
+                    <label for="estado" class="form-label">Estado:</label>
+                    <select name="estado" id="estado" class="form-control">
+                        <option value="regular" {% if request.args.get('estado', 'regular' )=='regular' %}selected{%
+                            endif %}>
+                            Regular
+                        </option>
+                        <option value="libre" {% if request.args.get('estado')=='libre' %}selected{% endif %}>
+                            Libre
+                        </option>
+                        <option value="inactivo" {% if request.args.get('estado')=='inactivo' %}selected{% endif %}>
+                            Inactivo
+                        </option>
+                    </select>
+                </div>
+
                 <!-- Filtro por Materia -->
-                <div class="col-md-4">
+                <div class="col-auto">
                     <label for="materia" class="form-label">Materia:</label>
                     <select name="materia" id="materia" class="form-control">
                         <option value="">Seleccione una Materia</option>
@@ -51,196 +68,219 @@
                         {% endfor %}
                     </select>
                 </div>
+
+                <!-- Botón de búsqueda -->
+
             </div>
 
-            <!-- Botón para filtrar -->
-            <div class="row">
-                <div class="col-md-12 text-end">
-                    <button type="submit" class="btn btn-primary">Filtrar</button>
-                    <a href="{{ url_for('cursos.ver_cursos') }}" class="btn btn-secondary">Limpiar</a>
-                </div>
-            </div>
-        </form>
-        <div class="table-responsive">
+    </div>
 
-            <table class="table table-bordered border-secondary table-striped">
-                <thead class="table-light">
-                    <tr>
-                        <th>DNI</th>
-                        <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>Materia</th>
-                        <th>Estado</th>
-                        <th>1er Parcial</th>
+    <!-- Botón para filtrar -->
+    <div class="row">
+        <div class="col-md-12 text-end">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+            <a href="{{ url_for('cursos.ver_cursos') }}" class="btn btn-secondary">Limpiar</a>
+        </div>
+    </div>
+    </form>
+    <div class="table-responsive">
 
-                        <th>2do Parcial</th>
-                        <th>Nota Final</th>
-                        <th>Acciones</th>
+        <table id="tablaInscripciones" class="table table-bordered border-secondary table-striped">
+            <thead class="table-light">
+                <tr>
+                    <th>
+                        <button onclick="ordenarTabla(0)" id="btn-dni" class="btn btn-link">DNI</button>
+                    </th>
+                    <th>Nombre</th>
+                    <th>
+                        <button onclick="ordenarTabla(2)" id="btn-apellido" class="btn btn-link">Apellido</button>
+                    </th>
+                    <th>
+                        <button onclick="ordenarTabla(3)" id="btn-materia" class="btn btn-link">Materia</button>
+                    </th>
+                    <th>Estado</th>
+                    <th>1er Parcial</th>
 
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for curso in cursos %}
-                    <tr class="">
-                        <td>{{ curso[0] }}</td>
-                        <td>{{ curso[1] }}</td>
-                        <td>{{ curso[2] }}</td>
-                        <td>{{ curso[3] }}</td>
-                        <td>{{ curso[4] }}</td>
-                        <td>{{ curso[5] }}
-                            <button title="Calificar" type="button" class="btn btn-success ms-2 calificar-btn"
-                                data-toggle="modal" data-target="#calificarModal" data-id_alumno_dni="{{ curso[0] }}"
-                                data-id_materia="{{
-                            curso[8] }}">
-                                <i class="fa-solid fa-user-graduate fa-beat-fade parcial1-icon "></i> </button>
-                        </td>
-                        <td>{{ curso[6] }}
-                            <button title="Calificar" type="button" class="btn btn-success ms-2 calificar-btn2"
-                                data-toggle="modal" data-target="#calificarModal2" data-id_alumno_dni="{{ curso[0] }}"
-                                data-id_materia="{{
-                        curso[8] }}">
-                                <i class="fa-solid fa-user-graduate fa-beat-fade parcial2-icon"></i> </button>
-                        </td>
-                        <td>{{ curso[7] }}
-                            <button title="Actualizar Nota Final" type="button"
-                                class="btn btn-primary actualizar-nota-btn ms-2" data-id_alumno_dni="{{ curso[0] }}"
-                                data-id_materia="{{ curso[8] }}"> <i class="fa-solid fa-award"></i>
-                            </button>
-                        </td>
-                        <td class="botones_materias">
-                            <!-- <button type="button" class="btn btn-warning edit-btn" data-toggle="modal"
+                    <th>2do Parcial</th>
+                    <th>Nota Final</th>
+                    <th>Acciones</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for curso in cursos %}
+                <tr class="">
+                    <td>{{ curso[0] }}</td>
+                    <td>{{ curso[1] }}</td>
+                    <td>{{ curso[2] }}</td>
+                    <td>{{ curso[3] }}</td>
+                    <td>{{ curso[4] }}</td>
+                    <td>{{ curso[5] }}
+                        <button title="Calificar" type="button" class="btn btn-success ms-2 calificar-btn"
+                            data-toggle="modal" data-target="#calificarModal" data-id_alumno_dni="{{ curso[0] }}"
+                            data-id_materia="{{ curso[8] }}" data-nombre_materia="{{ curso[3] }}">
+                            <i class="fa-solid fa-user-graduate fa-beat-fade parcial1-icon "></i> </button>
+                    </td>
+                    <td>{{ curso[6] }}
+                        <button title="Calificar" type="button" class="btn btn-success ms-2 calificar-btn2"
+                            data-toggle="modal" data-target="#calificarModal2" data-id_alumno_dni="{{ curso[0] }}"
+                            data-id_materia="{{
+                        curso[8] }}" data-nombre_materia2="{{ curso[3] }}">
+                            <i class=" fa-solid fa-user-graduate fa-beat-fade parcial2-icon"></i> </button>
+                    </td>
+                    <td>{{ curso[7] }}
+                        <button title="Actualizar Nota Final" type="button"
+                            class="btn btn-primary actualizar-nota-btn ms-2" data-id_alumno_dni="{{ curso[0] }}"
+                            data-id_materia="{{ curso[8] }}"> <i class="fa-solid fa-award"></i>
+                        </button>
+                    </td>
+                    <td class="botones_materias">
+                        <!-- <button type="button" class="btn btn-warning edit-btn" data-toggle="modal"
                                 data-target="#editModal" data-id_materia="{{ curso[0] }}" data-nombre="{{ curso[1] }}">
                                 <i class="fas fa-pencil-alt"></i>
                             </button> -->
-                            <button type="button" class="btn btn-danger delete-btn ms-2" data-toggle="modal"
-                                data-target="#deleteModal" data-id_alumno_dni="{{ curso[0] }}"
-                                data-id_materia="{{curso[8]}}" data-materia="{{curso[3]}}">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
+                        {% if curso[4] == 'regular' %}
+                        <button type="button" class="btn btn-danger delete-btn ms-2" data-toggle="modal"
+                            data-target="#deleteModal" data-id_alumno_dni="{{ curso[0] }}"
+                            data-id_materia="{{curso[8]}}" data-materia="{{curso[3]}}">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                        {% endif %}
 
 
 
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <!-- modal parcial 1 -->
-        <div class="modal fade" id="calificarModal" tabindex="-1" aria-labelledby="calificarModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form id="calificarForm" method="POST">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="calificarModalLabel">Calificar Parciales</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- modal parcial 1 -->
+    <div class="modal fade" id="calificarModal" tabindex="-1" aria-labelledby="calificarModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="calificarForm" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="calificarModalLabel">Calificar Parciales</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="edit-nombre">DNI</label>
+                            <input type="number" class="form-control" name="id_alumno_dni" id="calificar-id_alumno_dni"
+                                readonly>
                         </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label for="edit-nombre">DNI</label>
-                                <input type="number" class="form-control" name="id_alumno_dni"
-                                    id="calificar-id_alumno_dni">
-                            </div>
-                            <div class="form-group">
-                                <label for="edit-nombre">Materia</label>
-                                <input type="number" class="form-control" name="id_materia" id="calificar-id_materia">
-                            </div>
+                        <div class="form-group">
+                            <label for="edit-nombre">Materia</label>
+                            <input type="number" class="form-control" name="id_materia" id="calificar-id_materia"
+                                readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-nombre">Materia</label>
+                            <input type="text" class="form-control" name="nombre_materia" id="calificar-nombre_materia"
+                                readonly>
+                        </div>
 
-                            <div class="form-group">
-                                <label for="parcial_1">Calificación Parcial 1</label>
-                                <input type="number" class="form-control" id="parcial_1" name="parcial_1" min="0"
-                                    max="10" step="0.25" default="0">
-                            </div>
-                            <!-- <div class="form-group">
+                        <div class="form-group">
+                            <label for="parcial_1">Calificación Parcial 1</label>
+                            <input type="number" class="form-control" id="parcial_1" name="parcial_1" min="1" max="10"
+                                step="0.25" default="0">
+                        </div>
+                        <!-- <div class="form-group">
                             <label for="parcial_2">Calificación Parcial 2</label>
                             <input type="number" class="form-control" id="parcial_2" name="parcial_2" min="0" max="10"
                                 step="0.25" default=0>
                         </div> -->
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-primary">Guardar Calificaciones</button>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Calificaciones</button>
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
 
-        <!-- modal parcial 2 -->
-        <div class="modal fade" id="calificarModal2" tabindex="-1" aria-labelledby="calificarModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form id="calificarForm2" method="POST">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="calificarModalLabel">Calificar Parciales</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+    <!-- modal parcial 2 -->
+    <div class="modal fade" id="calificarModal2" tabindex="-1" aria-labelledby="calificarModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="calificarForm2" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="calificarModalLabel">Calificar Parciales</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="edit-nombre">DNI</label>
+                            <input type="number" class="form-control" name="id_alumno_dni" id="calificar-id_alumno_dni2"
+                                readonly>
                         </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label for="edit-nombre">DNI</label>
-                                <input type="number" class="form-control" name="id_alumno_dni"
-                                    id="calificar-id_alumno_dni2">
-                            </div>
-                            <div class="form-group">
-                                <label for="edit-nombre">Materia</label>
-                                <input type="number" class="form-control" name="id_materia" id="calificar-id_materia2">
-                            </div>
+                        <div class="form-group">
+                            <label for="edit-nombre">Materia</label>
+                            <input type="number" class="form-control" name="id_materia" id="calificar-id_materia2"
+                                readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-nombre">Materia</label>
+                            <input type="text" class="form-control" name="nombre_materia2"
+                                id="calificar-nombre_materia2" readonly>
+                        </div>
 
-                            <!-- <div class="form-group">
+                        <!-- <div class="form-group">
                         <label for="parcial_1">Calificación Parcial 1</label>
                         <input type="number" class="form-control" id="parcial_1" name="parcial_1" min="0" max="10"
                             step="0.25" default="0">
                     </div> -->
-                            <div class="form-group">
-                                <label for="parcial_2">Calificación Parcial 2</label>
-                                <input type="number" class="form-control" id="parcial_2" name="parcial_2" min="0"
-                                    max="10" step="0.25" default=0>
-                            </div>
+                        <div class="form-group">
+                            <label for="parcial_2">Calificación Parcial 2</label>
+                            <input type="number" class="form-control" id="parcial_2" name="parcial_2" min="1" max="10"
+                                step="0.25" default=0>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-primary">Guardar Calificaciones</button>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Calificaciones</button>
+                    </div>
+                </form>
             </div>
         </div>
-        <!-- Modal de Confirmación -->
-        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form method="POST" action="{{ url_for('cursos.eliminar_curso') }}">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="deleteModalLabel">Eliminar Curso</h5>
-                            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <input type="text" id="delete-alumno-dni" name="id_alumno_dni" readonly>
-                            <input type="hidden" id="delete-materia-id" name="id_materia">
-                            <input type="text" id="delete-materia" name="materia" readonly>
-                            <p>¿Estás seguro de que deseas eliminar este curso?</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-danger">Eliminar</button>
-                        </div>
-                    </form>
-                </div>
+    </div>
+    <!-- Modal de Confirmación -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="{{ url_for('cursos.eliminar_curso') }}">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Eliminar Curso</h5>
+                        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" id="delete-alumno-dni" name="id_alumno_dni" readonly>
+                        <input type="hidden" id="delete-materia-id" name="id_materia">
+                        <input type="text" id="delete-materia" name="materia" readonly>
+                        <p>¿Estás seguro de que deseas eliminar este curso?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </div>
+                </form>
             </div>
         </div>
-        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-        <script src="{{ url_for('static', filename='js/cursos.js') }}"></script>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/cursos.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/orden_cursos.js') }}"></script>
 
 
 
-        {% endblock content %}
+    {% endblock content %}
 </body>
 
 </html>

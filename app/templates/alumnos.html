@@ -62,8 +62,9 @@
                             data-toggle="modal" data-target="#deleteModal" data-id="{{ alumno[0] }}">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
-                        <button title="Inscribir a Materia" type="button" class="btn btn-success ms-2"
-                            data-toggle="modal" data-target="#inscribirModal" data-id_alumno_dni="{{ alumno[0] }}">
+                        <button title="Inscribir a Materia" type="button" class="btn btn-success ms-2 btnInscribir"
+                            data-toggle="modal" data-target="#inscribirModal" data-dni="{{ alumno[0] }}" id="dniAlumno"
+                            value="{{ alumno[0] }}" data-nombre_alumno="{{ alumno[1 ]}} {{ alumno[2] }}">
                             <i class="fa-solid fa-school-circle-check fa-beat-fade"></i>
                         </button>
 
@@ -94,21 +95,28 @@
 
                         <div class="form-group">
                             <label for="edit-nombre">DNI</label>
-                            <input type="number" class="form-control" name="id_alumno_dni" id="edit-id_alumno_dni">
+                            <input type="text" class="form-control" name="id_alumno_dni" id="edit-id_alumno_dni"
+                                minlength="7" maxlength="9" pattern="^\d{7,9}$"
+                                title="El DNI debe contener entre 7 y 9 dígitos numéricos">
                         </div>
 
                         <div class="form-group">
                             <label for="edit-nombre">Nombre</label>
-                            <input type="text" class="form-control" id="edit-nombre" name="nombre">
+                            <input type="text" class="form-control" id="edit-nombre" name="nombre" maxlength="30"
+                                minlength="2" pattern="^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$"
+                                title="El nombre solo puede contener letras y espacios, y debe tener como máximo 30 caracteres.">
                         </div>
                         <div class="form-group">
                             <label for="edit-apellido">Apellido</label>
-                            <input type="text" class="form-control" id="edit-apellido" name="apellido">
+                            <input type="text" class="form-control" id="edit-apellido" name="apellido" maxlength="30"
+                                minlength="2" pattern="^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$"
+                                title="El nombre solo puede contener letras y espacios, y debe tener como máximo 30 caracteres.">
                         </div>
 
                         <div class="form-group">
                             <label for="edit-fecha_nacimiento">Fecha de Nacimiento</label>
-                            <input type="date" class="form-control" id="edit-fecha_nacimiento" name="fecha_nacimiento">
+                            <input type="date" class="form-control" id="edit-fecha_nacimiento" name="fecha_nacimiento"
+                                min="1924-01-01" max="2007-12-31">
                         </div>
                         <div class="form-group">
                             <label for="edit-genero">Género</label>
@@ -141,22 +149,28 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="add-id_alumno_dni">DNI</label>
-                            <input type="number" class="form-control" id="add-id_alumno_dni" name="id_alumno_dni"
-                                required>
+                            <input type="text" class="form-control" id="add-id_alumno_dni" name="id_alumno_dni" required
+                                minlength="7" maxlength="9" pattern="^\d{7,9}$"
+                                title="El DNI debe contener entre 7 y 9 dígitos numéricos">
                         </div>
                         <div class="form-group">
                             <label for="add-nombre">Nombre</label>
-                            <input type="text" class="form-control" id="add-nombre" name="nombre" required>
+                            <input type="text" class="form-control" id="add-nombre" name="nombre" required
+                                maxlength="30" minlength="2" pattern="^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$"
+                                title="El nombre solo puede contener letras y espacios, y debe tener como máximo 30 caracteres.">
                         </div>
                         <div class="form-group">
                             <label for="add-apellido">Apellido</label>
-                            <input type="text" class="form-control" id="add-apellido" name="apellido" required>
+                            <input type="text" class="form-control" id="add-apellido" name="apellido" maxlength="30"
+                                minlength="2" pattern="^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$"
+                                title="El apellido solo puede contener letras y espacios, y debe tener como máximo 30 caracteres."
+                                required>
                         </div>
 
                         <div class="form-group">
                             <label for="add-fecha_nacimiento">Fecha de Nacimiento</label>
                             <input type="date" class="form-control" id="add-fecha_nacimiento" name="fecha_nacimiento"
-                                required>
+                                min="1924-01-01" max="2007-12-31" required>
                         </div>
                         <div class="form-group">
                             <label for="add-genero">Género</label>
@@ -199,6 +213,27 @@
             </div>
         </div>
     </div>
+
+
+
+    <!-- Modal para mostrar las materias no inscritas -->
+    <div class="modal fade" id="materiasModal" tabindex="-1" aria-labelledby="materiasModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="materiasModalLabel">Materias no inscritas</h5>
+                    <!-- Botón para mostrar el modal con materias no inscritas -->
+                    <button id="botonMostrarMaterias" class="btn btn-primary">Mostrar Materias</button>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul id="materiasList"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal para inscripción -->
     <div class="modal fade" id="inscribirModal" tabindex="-1" aria-labelledby="inscribirModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -211,39 +246,36 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <!-- Campo oculto para el ID del alumno -->
-                        <input type="hidden" id="alumnos_id_alumno_dni" name="alumnos_id_alumno_dni">
-
-                        <!-- Selección de materia -->
+                        <!-- Campo oculto para el DNI del alumno -->
+                        <input type="text" id="alumnos_id_alumno_dni" name="alumnos_id_alumno_dni" readonly>
+                        <input type="text" id="nombre_alumno" name="nombre_alumno" readonly>
+                        <input type="hidden" id="estado" name="estado" value="regular">
                         <div class="form-group">
                             <label for="materia">Seleccionar Materia</label>
                             <select class="form-control" id="materia" name="materias_id_materia">
-                                {% for materia in materias %}
-                                <option value="{{ materia[0] }}">{{ materia[1] }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <!-- Estado -->
-                        <div class="form-group">
-                            <label for="estado">Estado</label>
-                            <select class="form-control" id="estado" name="estado">
-                                <option value="regular">regular</option>
-                                <option value="libre">libre</option>
+                                <!-- Las opciones se llenarán dinámicamente con JavaScript -->
                             </select>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-primary">Inscribir</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
+
+
+
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/inscripcion.js') }}"></script>
     <script src="{{ url_for('static', filename='js/alumnos.js') }}"></script>
+
+
     {% endblock content %}
 </body>
 

@@ -27,7 +27,9 @@ def ver_cursos():
         JOIN 
             alumnos ON cursos.alumnos_id_alumno_dni = alumnos.id_alumno_dni
         JOIN 
-            materias ON cursos.materias_id_materia = materias.id_materia;
+            materias ON cursos.materias_id_materia = materias.id_materia
+        WHERE 
+            alumnos.estado <> 'inactivo' OR alumnos.estado IS NULL AND cursos.estado = 'regular';
     """
     cursor.execute("SELECT DISTINCT nombre FROM materias")
     materias = [row[0] for row in cursor.fetchall()]
@@ -198,8 +200,11 @@ def filtros():
     dni = request.args.get("dni", "")
     apellido = request.args.get("apellido", "")
     materia = request.args.get("materia", "")
+    estado = request.args.get("estado", "")
 
-    print(f"Filtros recibidos: DNI={dni}, Apellido={apellido}, Materia={materia}")
+    print(
+        f"Filtros recibidos: DNI={dni}, Apellido={apellido}, Materia={materia} Estado={estado}"
+    )
 
     query = """
         SELECT 
@@ -228,6 +233,10 @@ def filtros():
     if apellido:
         query += " AND alumnos.apellido LIKE %s"
         params.append(f"%{apellido}%")
+    if estado:
+        query += " AND cursos.estado LIKE %s"
+        params.append(f"%{estado}%")
+
     if materia:
         query += " AND materias.nombre LIKE %s"
         params.append(f"%{materia}%")
@@ -239,7 +248,7 @@ def filtros():
         cursos = cursor.fetchall()
         cursor.execute("SELECT DISTINCT nombre FROM materias")
         materias = [row[0] for row in cursor.fetchall()]
-        print(f"Resultados encontrados: {cursos}")
+        # print(f"Resultados encontrados: {cursos}")
     except Exception as e:
         print(f"Error en la consulta: {e}")
         cursos = []
@@ -268,7 +277,11 @@ def eliminar_curso():
     try:
         # Consulta SQL para eliminar el usuario
         print(f"id {id_alumno}")
-        query = "DELETE FROM cursos WHERE alumnos_id_alumno_dni = %s and materias_id_materia = %s"
+        query = """
+        UPDATE cursos 
+        SET estado = 'libre' 
+        WHERE alumnos_id_alumno_dni = %s AND materias_id_materia = %s
+        """
         cursor.execute(
             query,
             (

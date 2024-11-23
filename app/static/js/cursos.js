@@ -3,12 +3,13 @@
 $(document).on("click", ".calificar-btn", function () {
     var id_alumno_dni = $(this).data('id_alumno_dni');
     var id_materia = $(this).data('id_materia');
+    var nombre_materia = $(this).data('nombre_materia');
     console.log("ID Alumno: ", id_alumno_dni);
     console.log("ID Materia: ", id_materia);
 
     $("#calificar-id_alumno_dni").val(id_alumno_dni);
     $("#calificar-id_materia").val(id_materia);
-
+    $("#calificar-nombre_materia").val(nombre_materia);
     // Cambiar la acción del formulario para incluir los IDs
     $("#calificarForm").attr("action", "/cursos/calificar/" + id_alumno_dni + "/" + id_materia);
 
@@ -18,12 +19,13 @@ $(document).on("click", ".calificar-btn", function () {
 $(document).on("click", ".calificar-btn2", function () {
     var id_alumno_dni = $(this).data('id_alumno_dni');
     var id_materia = $(this).data('id_materia');
+    var nombre_materia = $(this).data('nombre_materia2');
     console.log("ID Alumno: ", id_alumno_dni);
     console.log("ID Materia: ", id_materia);
-
+    console.log("ID Materia: ", nombre_materia);
     $("#calificar-id_alumno_dni2").val(id_alumno_dni);
     $("#calificar-id_materia2").val(id_materia);
-
+    $("#calificar-nombre_materia2").val(nombre_materia);
     // Cambiar la acción del formulario para incluir los IDs
     $("#calificarForm2").attr("action", "/cursos/calificar2/" + id_alumno_dni + "/" + id_materia);
 

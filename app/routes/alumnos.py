@@ -1,4 +1,15 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from flask import (
+    Blueprint,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    session,
+    flash,
+    jsonify,
+)
+from psycopg2 import connect, OperationalError
+
 from app.conexion_bd import obtener_conexion
 from .main import role_required
 
@@ -10,15 +21,45 @@ alumnos_bp = Blueprint("alumnos", __name__)
 def alumnos():
     conexion = obtener_conexion()
     cursor = conexion.cursor()
-    cursor.execute("SELECT * FROM alumnos")
+    cursor.execute("SELECT * FROM alumnos WHERE estado <> 'inactivo' OR estado IS NULL")
     alumnos = cursor.fetchall()
-    query = "SELECT id_materia, nombre FROM materias"
-    cursor.execute(query)
-    materias = cursor.fetchall()
+
     cursor.close()
     conexion.close()
     print("Sesión actual:", session)
-    return render_template("alumnos.html", alumnos=alumnos, materias=materias)
+    return render_template("alumnos.html", alumnos=alumnos)
+
+
+@alumnos_bp.route("/obtener_materias_no_inscritas/<dni>", methods=["GET"])
+def obtener_materias_no_inscritas(dni):
+    try:
+        conexion = obtener_conexion()
+        with conexion.cursor() as cursor:
+            print(f"dni para materias no inscriptas: {dni}")
+            query = """
+                SELECT id_materia, nombre 
+                FROM materias 
+                WHERE id_materia NOT IN (
+                    SELECT materias_id_materia 
+                    FROM cursos 
+                    WHERE alumnos_id_alumno_dni = %s
+                )
+            """
+            cursor.execute(query, (dni,))
+            materias_no_inscritas = cursor.fetchall()
+
+        # Convertir el resultado a JSON
+        return jsonify(
+            [{"id_materia": row[0], "nombre": row[1]} for row in materias_no_inscritas]
+        )
+
+    except OperationalError as e:
+        # Si ocurre un error de conexión a la base de datos
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        if conexion:
+            conexion.close()
 
 
 @alumnos_bp.route("/alumnos/edit/<int:id_alumno_dni>", methods=["GET", "POST"])
@@ -109,11 +150,11 @@ def delete(id_alumno_dni):
     conexion = obtener_conexion()
     cursor = conexion.cursor()
 
-    query = "DELETE FROM alumnos WHERE id_alumno_dni = %s"
+    query = "UPDATE alumnos SET estado = 'inactivo' WHERE id_alumno_dni = %s"
     try:
         cursor.execute(query, (id_alumno_dni,))
         conexion.commit()
-        flash(f"Alumno con id {id_alumno_dni} eliminado exitosamente", "success")
+        flash(f"Alumno con DNI {id_alumno_dni} eliminado exitosamente", "success")
     except Exception as e:
         conexion.rollback()
         flash("Error al eliminar el alumno: " + str(e), "danger")

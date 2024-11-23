@@ -1,0 +1,21 @@
+html,
+body {
+    background-image: url(../img/cudi.jpg);
+    background-attachment: fixed;
+    height: 100%;
+    /* Asegúrate de que ocupen toda la altura de la ventana */
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    /* Centrado horizontal */
+    align-items: center;
+    /* Centrado vertical */
+}
+
+.iframe-container {
+    display: flex;
+    justify-content: center;
+    /* Centrado horizontal interno (por si hay más elementos) */
+    align-items: center;
+    /* Centrado vertical interno */
+}

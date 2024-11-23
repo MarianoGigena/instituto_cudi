@@ -25,10 +25,19 @@ $(document).on("click", ".edit-btn", function () {
     $("#editForm").attr("action", "/alumnos/edit/" + id_alumno_dni);
 });
 
-$('#inscribirModal').on('show.bs.modal', function (event) {
+
+/* $('#inscribirModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); // Botón que activa el modal
+    var dni = button.data('dni'); // Extrae el DNI del atributo data-dni
+    var modal = $(this);
+    modal.find('#alumnos_id_alumno_dni').val(dni); // Establece el DNI en el campo oculto
+}); */
+
+
+/* $('#inscribirModal').on('show.bs.modal', function (event) {
     var button = $(event.relatedTarget);  // Botón que activó el modal
     var idAlumno = button.data('id_alumno_dni');  // Extrae el ID del alumno
 
     var modal = $(this);
     modal.find('#alumnos_id_alumno_dni').val(idAlumno);  // Inserta el ID en el campo oculto
-});
+}); */
