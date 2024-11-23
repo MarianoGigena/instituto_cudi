@@ -41,20 +41,16 @@
                         value="{{ request.args.get('apellido', '') }}">
                 </div>
 
-                <!-- Filtro por Estado -->
+
                 <div class="col-auto">
-                    <label for="estado" class="form-label">Estado:</label>
+                    <label for="estado" class="form-label">estado:</label>
                     <select name="estado" id="estado" class="form-control">
-                        <option value="regular" {% if request.args.get('estado', 'regular' )=='regular' %}selected{%
-                            endif %}>
-                            Regular
+                        <option value="">Seleccione una estado</option>
+                        {% for estado in estados %}
+                        <option value="{{ estado }}" {% if request.args.get('estado')==estado %}selected{% endif %}>
+                            {{ estado }}
                         </option>
-                        <option value="libre" {% if request.args.get('estado')=='libre' %}selected{% endif %}>
-                            Libre
-                        </option>
-                        <option value="inactivo" {% if request.args.get('estado')=='inactivo' %}selected{% endif %}>
-                            Inactivo
-                        </option>
+                        {% endfor %}
                     </select>
                 </div>
 
@@ -100,11 +96,16 @@
                     <th>
                         <button onclick="ordenarTabla(3)" id="btn-materia" class="btn btn-link">Materia</button>
                     </th>
-                    <th>Estado</th>
+                    <th>
+                        <button onclick="ordenarTabla(4)" id="btn-estado" class="btn btn-link">Estado</button>
+                    </th>
+
                     <th>1er Parcial</th>
 
                     <th>2do Parcial</th>
-                    <th>Nota Final</th>
+                    <th>
+                        <button onclick="ordenarTabla(7)" id="btn-nota_final" class="btn btn-link">Nota Final</button>
+                    </th>
                     <th>Acciones</th>
 
                 </tr>
@@ -121,14 +122,20 @@
                         <button title="Calificar" type="button" class="btn btn-success ms-2 calificar-btn"
                             data-toggle="modal" data-target="#calificarModal" data-id_alumno_dni="{{ curso[0] }}"
                             data-id_materia="{{ curso[8] }}" data-nombre_materia="{{ curso[3] }}">
-                            <i class="fa-solid fa-user-graduate fa-beat-fade parcial1-icon "></i> </button>
+                            <i class="fa-solid fa-user-graduate 
+                            {% if curso[5] is not number %}fa-beat-fade{% endif %} 
+                            parcial2-icon"></i> </button>
                     </td>
                     <td>{{ curso[6] }}
                         <button title="Calificar" type="button" class="btn btn-success ms-2 calificar-btn2"
                             data-toggle="modal" data-target="#calificarModal2" data-id_alumno_dni="{{ curso[0] }}"
                             data-id_materia="{{
                         curso[8] }}" data-nombre_materia2="{{ curso[3] }}">
-                            <i class=" fa-solid fa-user-graduate fa-beat-fade parcial2-icon"></i> </button>
+                            <i class="fa-solid fa-user-graduate 
+                        {% if curso[6] is not number %}fa-beat-fade{% endif %} 
+                        parcial2-icon"></i>
+
+                        </button>
                     </td>
                     <td>{{ curso[7] }}
                         <button title="Actualizar Nota Final" type="button"
@@ -141,7 +148,8 @@
                                 data-target="#editModal" data-id_materia="{{ curso[0] }}" data-nombre="{{ curso[1] }}">
                                 <i class="fas fa-pencil-alt"></i>
                             </button> -->
-                        {% if curso[4] == 'regular' %}
+                        {% if curso[4] == 'regular' or curso[4] == 'Promociono' or curso[4] == 'A Final' or curso[4] ==
+                        'Recursa' %}
                         <button type="button" class="btn btn-danger delete-btn ms-2" data-toggle="modal"
                             data-target="#deleteModal" data-id_alumno_dni="{{ curso[0] }}"
                             data-id_materia="{{curso[8]}}" data-materia="{{curso[3]}}">
@@ -188,7 +196,7 @@
                         <div class="form-group">
                             <label for="parcial_1">Calificación Parcial 1</label>
                             <input type="number" class="form-control" id="parcial_1" name="parcial_1" min="1" max="10"
-                                step="0.25" default="0">
+                                step="0.25" default="0" required>
                         </div>
                         <!-- <div class="form-group">
                             <label for="parcial_2">Calificación Parcial 2</label>
@@ -241,7 +249,7 @@
                         <div class="form-group">
                             <label for="parcial_2">Calificación Parcial 2</label>
                             <input type="number" class="form-control" id="parcial_2" name="parcial_2" min="1" max="10"
-                                step="0.25" default=0>
+                                step="0.25" default="0" required>
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -20,7 +20,9 @@ body {
 
 #btn-dni,
 #btn-apellido,
-#btn-materia {
+#btn-materia,
+#btn-estado,
+#btn-nota_final {
     color: black;
     font-weight: bold;
     margin-bottom: 0px;

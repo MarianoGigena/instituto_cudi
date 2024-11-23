@@ -29,7 +29,8 @@ def ver_cursos():
         JOIN 
             materias ON cursos.materias_id_materia = materias.id_materia
         WHERE 
-            alumnos.estado <> 'inactivo' OR alumnos.estado IS NULL AND cursos.estado = 'regular';
+            alumnos.estado <> 'inactivo' OR alumnos.estado IS NULL 
+            AND cursos.estado = 'regular' OR cursos.estado = 'A Final' OR cursos.estado='Promociono';
     """
     cursor.execute("SELECT DISTINCT nombre FROM materias")
     materias = [row[0] for row in cursor.fetchall()]
@@ -37,9 +38,13 @@ def ver_cursos():
     cursor.execute(query)
 
     cursos = cursor.fetchall()
+    cursor.execute("SELECT DISTINCT estado FROM cursos ORDER BY estado")
+    estados = [row[0] for row in cursor.fetchall()]
     cursor.close()
     conexion.close()
-    return render_template("cursos.html", cursos=cursos, materias=materias)
+    return render_template(
+        "cursos.html", cursos=cursos, materias=materias, estados=estados
+    )
 
 
 @cursos_bp.route("/cursos/inscribir", methods=["POST"])
@@ -171,7 +176,10 @@ def actualizar_nota_final(id_alumno_dni, id_materia):
     parcial_2 = result[1] if result else 0.0
 
     # Calcular la nota final
-    nota_final = (parcial_1 + parcial_2) / 2
+    try:
+        nota_final = (parcial_1 + parcial_2) / 2
+    except Exception as e:
+        flash(f"Error al calcular nota final: {str(e)}", "danger")
 
     # Actualizar la nota final en la base de datos
     query = """
@@ -183,6 +191,26 @@ def actualizar_nota_final(id_alumno_dni, id_materia):
         cursor.execute(query, (nota_final, id_alumno_dni, id_materia))
         conexion.commit()
         flash("Nota final actualizada correctamente", "success")
+        if nota_final >= 6 and parcial_1 >= 6 and parcial_2 >= 6:
+            cursor.execute(
+                "UPDATE cursos SET estado = 'Promociono' WHERE alumnos_id_alumno_dni = %s AND materias_id_materia = %s ",
+                (id_alumno_dni, id_materia),
+            )
+            conexion.commit()
+        elif nota_final >= 4 and parcial_1 >= 4 and parcial_2 >= 4:
+            print("Da final")
+            cursor.execute(
+                "UPDATE cursos SET estado = 'A Final' WHERE alumnos_id_alumno_dni = %s AND materias_id_materia = %s ",
+                (id_alumno_dni, id_materia),
+            )
+            conexion.commit()
+        else:
+            cursor.execute(
+                "UPDATE cursos SET estado = 'Recursa' WHERE alumnos_id_alumno_dni = %s AND materias_id_materia = %s ",
+                (id_alumno_dni, id_materia),
+            )
+
+            conexion.commit()
     except Exception as e:
         conexion.rollback()
         flash(f"Error al actualizar la nota final: {str(e)}", "danger")
@@ -248,6 +276,8 @@ def filtros():
         cursos = cursor.fetchall()
         cursor.execute("SELECT DISTINCT nombre FROM materias")
         materias = [row[0] for row in cursor.fetchall()]
+        cursor.execute("SELECT DISTINCT estado FROM cursos ORDER BY estado")
+        estados = [row[0] for row in cursor.fetchall()]
         # print(f"Resultados encontrados: {cursos}")
     except Exception as e:
         print(f"Error en la consulta: {e}")
@@ -255,7 +285,9 @@ def filtros():
     finally:
         cursor.close()
         conexion.close()
-    return render_template("cursos.html", cursos=cursos, materias=materias)
+    return render_template(
+        "cursos.html", cursos=cursos, materias=materias, estados=estados
+    )
 
 
 @cursos_bp.route("/cursos/eliminar_curso", methods=["POST"])
