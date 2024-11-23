@@ -29,8 +29,8 @@ def ver_cursos():
         JOIN 
             materias ON cursos.materias_id_materia = materias.id_materia
         WHERE 
-            alumnos.estado <> 'inactivo' OR alumnos.estado IS NULL 
-            AND cursos.estado = 'regular' OR cursos.estado = 'A Final' OR cursos.estado='Promociono';
+            (alumnos.estado IS NULL OR alumnos.estado <> 'inactivo') 
+        AND (cursos.estado = 'regular' OR cursos.estado = 'A Final' OR cursos.estado = 'Promociono' OR cursos.estado = 'Recursa');
     """
     cursor.execute("SELECT DISTINCT nombre FROM materias")
     materias = [row[0] for row in cursor.fetchall()]
@@ -110,6 +110,7 @@ def calificar(id_alumno_dni, id_materia):
         finally:
             cursor.close()
             conexion.close()
+            actualizar_nota_final(id_alumno_dni, id_materia)
         return redirect(url_for("cursos.ver_cursos"))
     flash("Método no permitido", "danger")
     return redirect(url_for("cursos.ver_cursos"))
@@ -148,6 +149,7 @@ def calificar2(id_alumno_dni, id_materia):
         finally:
             cursor.close()
             conexion.close()
+            actualizar_nota_final(id_alumno_dni, id_materia)
         return redirect(url_for("cursos.ver_cursos"))
     flash("Método no permitido", "danger")
     return redirect(url_for("cursos.ver_cursos"))
@@ -179,8 +181,8 @@ def actualizar_nota_final(id_alumno_dni, id_materia):
     try:
         nota_final = (parcial_1 + parcial_2) / 2
     except Exception as e:
-        flash(f"Error al calcular nota final: {str(e)}", "danger")
-
+        flash(f"Falta alguna nota para calcular la nota final", "info")
+        print(f"Error: {e}")
     # Actualizar la nota final en la base de datos
     query = """
         UPDATE cursos 
@@ -213,7 +215,8 @@ def actualizar_nota_final(id_alumno_dni, id_materia):
             conexion.commit()
     except Exception as e:
         conexion.rollback()
-        flash(f"Error al actualizar la nota final: {str(e)}", "danger")
+        flash(f"Datos insuficientes para actualizar la nota final: ", "info")
+        print(f"Error: {e}")
     finally:
         cursor.close()
         conexion.close()

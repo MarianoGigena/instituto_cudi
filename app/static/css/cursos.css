@@ -28,3 +28,80 @@ body {
     margin-bottom: 0px;
     padding-bottom: 0px;
 }
+
+
+/* Estilo para los mensajes flash */
+.custom-flash {
+    border-radius: 8px;
+    /* Bordes redondeados */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Sombra suave */
+    padding: 1.25rem;
+    /* Espaciado más amplio */
+    font-size: 1rem;
+    /* Tamaño de fuente ligeramente mayor */
+}
+
+/* Estilo para el botón de cierre */
+.custom-close {
+    position: absolute;
+    /* Posiciona la 'X' al extremo derecho */
+    top: 10px;
+    /* Ajusta verticalmente */
+    right: 10px;
+    /* Ajusta horizontalmente */
+    background: none;
+    /* Sin fondo */
+    border: none;
+    /* Sin borde */
+    font-size: 1.25rem;
+    /* Tamaño de la 'X' */
+    color: rgba(0, 0, 0, 0.6);
+    /* Color de la 'X' */
+    cursor: pointer;
+    /* Manito al pasar sobre la 'X' */
+    outline: none;
+    /* Elimina el borde azul al hacer clic */
+}
+
+.custom-close:hover {
+    color: rgba(0, 0, 0, 0.8);
+    /* Oscurece la 'X' al pasar el mouse */
+}
+
+/* Para mensajes específicos */
+.alert-success {
+    background-color: #d4edda;
+    /* Verde suave */
+    color: #155724;
+    /* Texto verde oscuro */
+    border-color: #c3e6cb;
+    /* Borde verde claro */
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    /* Rojo suave */
+    color: #721c24;
+    /* Texto rojo oscuro */
+    border-color: #f5c6cb;
+    /* Borde rojo claro */
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    /* Azul suave */
+    color: #0c5460;
+    /* Texto azul oscuro */
+    border-color: #bee5eb;
+    /* Borde azul claro */
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    /* Amarillo suave */
+    color: #856404;
+    /* Texto amarillo oscuro */
+    border-color: #ffeeba;
+    /* Borde amarillo claro */
+}
