@@ -10,6 +10,18 @@ body {
     border-radius: 15px;
 }
 
+.card .btn {
+    width: auto;
+    /* Asegura que los botones no ocupen todo el ancho */
+}
+
+@media (max-width: 768px) {
+    .card .btn {
+        margin-bottom: 5px;
+        /* Espaciado entre botones */
+    }
+}
+
 #btn-dni,
 #btn-apellido,
 #btn-genero,

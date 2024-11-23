@@ -86,7 +86,7 @@
         </div>
     </div>
     </form>
-    <div class="table-responsive">
+    <div class="table-responsive d-none d-md-block">
 
         <table id="tablaInscripciones" class="table table-bordered border-secondary table-striped">
             <thead class="table-light">
@@ -169,6 +169,46 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+    <!-- Cards visibles solo en dispositivos pequeños -->
+    <div class="d-block d-md-none">
+        {% for curso in cursos %}
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">{{ curso[1] }} {{ curso[2] }}</h5>
+                <p class="card-text"><strong>DNI:</strong> {{ curso[0] }}</p>
+                <p class="card-text"><strong>Materia:</strong> {{ curso[3] }}</p>
+                <p class="card-text"><strong>Estado:</strong> {{ curso[4] }}</p>
+                <p class="card-text"><strong>1er Parcial:</strong> {{ curso[5] }}</p>
+                <p class="card-text"><strong>2do Parcial:</strong> {{ curso[6] }}</p>
+                <p class="card-text"><strong>Nota Final:</strong> {{ curso[7] }}</p>
+                <div class="d-flex justify-content-start">
+                    <!-- Botones -->
+                    <button title="Calificar 1er Parcial" type="button" class="btn btn-success me-2 calificar-btn"
+                        data-toggle="modal" data-target="#calificarModal" data-id_alumno_dni="{{ curso[0] }}"
+                        data-id_materia="{{ curso[8] }}" data-nombre_materia="{{ curso[3] }}">
+                        <i class="fa-solid fa-user-graduate"></i>
+                    </button>
+                    <button title="Calificar 2do Parcial" type="button" class="btn btn-success me-2 calificar-btn2"
+                        data-toggle="modal" data-target="#calificarModal2" data-id_alumno_dni="{{ curso[0] }}"
+                        data-id_materia="{{ curso[8] }}" data-nombre_materia2="{{ curso[3] }}">
+                        <i class="fa-solid fa-user-graduate"></i>
+                    </button>
+                    <button title="Actualizar Nota Final" type="button" class="btn btn-primary me-2 actualizar-nota-btn"
+                        data-id_alumno_dni="{{ curso[0] }}" data-id_materia="{{ curso[8] }}">
+                        <i class="fa-solid fa-award"></i>
+                    </button>
+                    {% if curso[4] in ['regular', 'Promociono', 'A Final', 'Recursa'] %}
+                    <button title="Eliminar Inscripción" type="button" class="btn btn-danger delete-btn"
+                        data-toggle="modal" data-target="#deleteModal" data-id_alumno_dni="{{ curso[0] }}"
+                        data-id_materia="{{ curso[8] }}" data-materia="{{ curso[3] }}">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
     <!-- modal parcial 1 -->
     <div class="modal fade" id="calificarModal" tabindex="-1" aria-labelledby="calificarModalLabel" aria-hidden="true">
