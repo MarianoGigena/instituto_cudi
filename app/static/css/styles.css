@@ -77,3 +77,13 @@ img {
     width: 70px;
     margin-right: 10px;
 }
+
+.login {
+    color: white;
+
+}
+
+.login:hover {
+    color: rgb(61, 235, 241);
+
+}
