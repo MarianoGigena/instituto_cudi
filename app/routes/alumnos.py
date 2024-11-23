@@ -8,8 +8,7 @@ from flask import (
     flash,
     jsonify,
 )
-
-# from psycopg2 import connect, OperationalError
+from psycopg2 import connect, OperationalError
 
 from app.conexion_bd import obtener_conexion
 from .main import role_required
@@ -54,7 +53,7 @@ def obtener_materias_no_inscritas(dni):
             [{"id_materia": row[0], "nombre": row[1]} for row in materias_no_inscritas]
         )
 
-    except Exception as e:
+    except OperationalError as e:
         # Si ocurre un error de conexión a la base de datos
         return jsonify({"error": str(e)}), 500
 
