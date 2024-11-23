@@ -11,9 +11,9 @@ def profesores():
     conexion = obtener_conexion()
     cursor = conexion.cursor()
     cursor.execute(
-        """SELECT profesores.id_profesor_dni, profesores.nombre, profesores.apellido, materias.nombre 
+        """SELECT profesores.id_profesor_dni, profesores.nombre, profesores.apellido, materias.nombre, materias.id_materia
         FROM profesores
-        INNER JOIN materias ON profesores.materias_id_materia = materias.id_materia"""
+        INNER JOIN materias ON profesores.materias_id_materia = materias.id_materia ORDER BY materias.nombre asc"""
     )
     profesores = cursor.fetchall()
     query = "SELECT id_materia, nombre FROM materias"

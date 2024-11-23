@@ -8,3 +8,12 @@ def obtener_conexion():
         password="UrDrhOOhFRzlF3r3FVYI",
         database="bpwepioek9qlpkrlo58y",
     )
+
+
+def obtener_conexion2():
+    return mysql.connector.connect(
+        host="127.0.0.1",
+        user="root",
+        password="3793",
+        database="instituto_cudi3",
+    )

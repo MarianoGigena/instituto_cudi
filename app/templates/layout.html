@@ -49,26 +49,26 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ url_for('materias.materias') }}">Materias</a></li>
-                            <li><a class=" dropdown-item" href="#">Notas</a>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="{{ url_for('cursos.ver_cursos') }}">Ver cursada</a></li>
-                        </ul>
+                            <!-- <li><a class=" dropdown-item" href="#">Notas</a> -->
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.logout') }}">Cerrar Sesión</a>
+                    <li>
+                        <hr class="dropdown-divider">
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link">Usuario: {{ session['nombre'] }} - Rol: {{session['role']}}</a>
-                    </li>
-                    <!-- Mostrar este enlace solo si el usuario es admin -->
-                    {% if session.get('role') == 'admin' %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin.admin_panel') }}">Panel de Admin</a>
-                    </li>
-                    {% endif %}
+                    <li><a class="dropdown-item" href="{{ url_for('cursos.ver_cursos') }}">Ver cursada</a></li>
+                </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('main.logout') }}">Cerrar Sesión</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">Usuario: {{ session['nombre'] }} - Rol: {{session['role']}}</a>
+                </li>
+                <!-- Mostrar este enlace solo si el usuario es admin -->
+                {% if session.get('role') == 'admin' %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('admin.admin_panel') }}">Panel de Admin</a>
+                </li>
+                {% endif %}
 
                 </ul>
 

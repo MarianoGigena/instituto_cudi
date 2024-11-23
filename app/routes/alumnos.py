@@ -110,6 +110,7 @@ def add():
 
     fecha_nacimiento = request.form.get("fecha_nacimiento")
     genero = request.form.get("genero")
+    estado = "activo"
 
     # Verifica que los campos requeridos estén completos
     if (
@@ -124,10 +125,10 @@ def add():
 
     # Construye la consulta SQL para insertar el nuevo alumno
     query = """
-        INSERT INTO alumnos (id_alumno_dni, nombre, apellido, fecha_nacimiento, genero)
-        VALUES (%s, %s, %s, %s, %s)
+        INSERT INTO alumnos (id_alumno_dni, nombre, apellido, fecha_nacimiento, genero, estado)
+        VALUES (%s, %s, %s, %s, %s, %s)
     """
-    values = (id_alumno_dni, nombre, apellido, fecha_nacimiento, genero)
+    values = (id_alumno_dni, nombre, apellido, fecha_nacimiento, genero, estado)
 
     # Ejecuta la consulta e inserta los datos en la base de datos
     try:
