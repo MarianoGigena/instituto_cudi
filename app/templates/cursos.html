@@ -123,14 +123,31 @@
                     <td>{{ curso[2] }}</td>
                     <td>{{ curso[3] }}</td>
                     <td>{{ curso[4] }}</td>
-                    <td>{{ curso[5] }}
-                        <button title="Calificar" type="button" class="btn btn-success ms-2 calificar-btn"
-                            data-toggle="modal" data-target="#calificarModal" data-id_alumno_dni="{{ curso[0] }}"
-                            data-id_materia="{{ curso[8] }}" data-nombre_materia="{{ curso[3] }}">
-                            <i class="fa-solid fa-user-graduate 
-                            {% if curso[5] is not number %}fa-beat-fade{% endif %} 
-                            parcial2-icon"></i> </button>
+                    <td class="celda-alineada">
+                        <div class="contenedor-nota-boton">
+                            <span class="nota-texto">{{ curso[5] if curso[5] is not none else 'None' }}</span>
+                            <button title="Calificar" type="button" class="btn btn-success calificar-btn"
+                                data-toggle="modal" data-target="#calificarModal" data-id_alumno_dni="{{ curso[0] }}"
+                                data-id_materia="{{ curso[8] }}" data-nombre_materia="{{ curso[3] }}">
+                                <i class="fa-solid fa-user-graduate 
+                                {% if curso[5] is not number %}fa-beat-fade{% endif %} 
+                                parcial1-icon"></i>
+                            </button>
+                        </div>
                     </td>
+                    <td class="celda-alineada">
+                        <div class="contenedor-nota-boton">
+                            <span class="nota-texto">{{ curso[6] if curso[6] is not none else 'None' }}</span>
+                            <button title="Calificar" type="button" class="btn btn-success calificar-btn2"
+                                data-toggle="modal" data-target="#calificarModal2" data-id_alumno_dni="{{ curso[0] }}"
+                                data-id_materia="{{ curso[8] }}" data-nombre_materia2="{{ curso[3] }}">
+                                <i class="fa-solid fa-user-graduate 
+                                {% if curso[6] is not number %}fa-beat-fade{% endif %} 
+                                parcial1-icon"></i>
+                            </button>
+                        </div>
+                    </td>
+                    <!-- 
                     <td>{{ curso[6] }}
                         <button title="Calificar" type="button" class="btn btn-success ms-2 calificar-btn2"
                             data-toggle="modal" data-target="#calificarModal2" data-id_alumno_dni="{{ curso[0] }}"
@@ -141,13 +158,21 @@
                         parcial2-icon"></i>
 
                         </button>
+                    </td> -->
+
+                    <td class="celda-alineada">
+                        <div class="contenedor-nota-boton">
+                            <span class="nota-texto">{{ curso[7] if curso[7] is not none else 'None' }}</span>
+                            <button title="Actualizar Nota Final" type="button"
+                                class="btn btn-primary actualizar-nota-btn ms-2" data-id_alumno_dni="{{ curso[0] }}"
+                                data-id_materia="{{ curso[8] }}"> <i class="fa-solid fa-award    {% if curso[7] is not number %}fa-beat-fade {% endif
+                                    %}"></i>
+                            </button>
                     </td>
-                    <td>{{ curso[7] }}
-                        <button title="Actualizar Nota Final" type="button"
-                            class="btn btn-primary actualizar-nota-btn ms-2" data-id_alumno_dni="{{ curso[0] }}"
-                            data-id_materia="{{ curso[8] }}"> <i class="fa-solid fa-award"></i>
-                        </button>
-                    </td>
+
+
+
+
                     <td class="botones_materias">
                         <!-- <button type="button" class="btn btn-warning edit-btn" data-toggle="modal"
                                 data-target="#editModal" data-id_materia="{{ curso[0] }}" data-nombre="{{ curso[1] }}">
@@ -282,8 +307,8 @@
                         </div>
                         <div class="form-group">
                             <label for="edit-nombre">Materia</label>
-                            <input type="text" class="form-control" name="nombre_materia2"
-                                id="calificar-nombre_materia2" readonly>
+                            <input type="text" class="form-control" name="nombre_materia" id="calificar-nombre_materia2"
+                                readonly>
                         </div>
 
                         <!-- <div class="form-group">

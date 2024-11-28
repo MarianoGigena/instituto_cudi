@@ -105,3 +105,26 @@ body {
     border-color: #ffeeba;
     /* Borde amarillo claro */
 }
+
+.celda-alineada {
+    vertical-align: middle;
+    /* Asegura que el contenido esté centrado verticalmente en la celda */
+}
+
+.contenedor-nota-boton {
+    display: flex;
+    /* Usa Flexbox para controlar la alineación */
+    align-items: center;
+    /* Alinea el contenido verticalmente */
+    justify-content: space-between;
+    /* Agrega un espacio fijo entre la nota y el botón */
+    gap: 10px;
+    /* Espaciado opcional entre nota y botón */
+}
+
+.nota-texto {
+    min-width: 3ch;
+    /* Asegura un espacio mínimo para valores cortos */
+    text-align: right;
+    /* Alinea los números a la derecha */
+}

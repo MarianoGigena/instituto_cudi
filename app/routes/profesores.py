@@ -44,7 +44,7 @@ def add():
     # Construye la consulta SQL para insertar el nuevo alumno
     query = """
         INSERT INTO profesores (id_profesor_dni, nombre, apellido, materias_id_materia, estado)
-        VALUES (%s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s)
     """
     values = (id_profesor_dni, nombre, apellido, materia, estado)
 
