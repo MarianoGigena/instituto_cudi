@@ -24,10 +24,13 @@ def alumnos():
     cursor.execute("SELECT * FROM alumnos WHERE estado <> 'inactivo' OR estado IS NULL")
     alumnos = cursor.fetchall()
 
+    cursor.execute("SELECT DISTINCT estado FROM alumnos ORDER BY estado")
+    estados = [row[0] for row in cursor.fetchall()]
+
     cursor.close()
     conexion.close()
     print("Sesión actual:", session)
-    return render_template("alumnos.html", alumnos=alumnos)
+    return render_template("alumnos.html", alumnos=alumnos, estados=estados)
 
 
 @alumnos_bp.route("/obtener_materias_no_inscritas/<dni>", methods=["GET"])
@@ -43,7 +46,7 @@ def obtener_materias_no_inscritas(dni):
                     SELECT materias_id_materia 
                     FROM cursos 
                     WHERE alumnos_id_alumno_dni = %s
-                )
+                )  AND estado= 'activo'
             """
             cursor.execute(query, (dni,))
             materias_no_inscritas = cursor.fetchall()
@@ -163,4 +166,51 @@ def delete(id_alumno_dni):
         cursor.close()
         conexion.close()
 
+    return redirect(url_for("alumnos.alumnos"))
+
+
+@alumnos_bp.route("/alumnos/filtros", methods=["GET"])
+@role_required("admin", "invitado", "user")
+def filtros():
+    conexion = obtener_conexion()
+    cursor = conexion.cursor()
+    estado = request.args.get("estado")
+    query = "SELECT * FROM alumnos"
+    values = []
+
+    if estado:
+        query += " WHERE estado = %s"
+        values.append(estado)
+
+    cursor.execute(query, values)
+    alumnos = cursor.fetchall()
+
+    cursor.execute("SELECT DISTINCT estado FROM alumnos ORDER BY estado")
+    estados = [row[0] for row in cursor.fetchall()]
+
+    cursor.close()
+    conexion.close()
+    print("Sesión actual:", session)
+    return render_template("alumnos.html", alumnos=alumnos, estados=estados)
+
+
+@alumnos_bp.route("/alumnos/activar/<int:id_alumno>", methods=["POST"])
+@role_required("admin")
+def activar_alumno(id_alumno):
+    conexion = obtener_conexion()
+    cursor = conexion.cursor()
+    try:
+        # Actualizar el estado del alumno a "activo"
+        query = "UPDATE alumnos SET estado = 'activo' WHERE id_alumno_dni = %s"
+        cursor.execute(query, (id_alumno,))
+        conexion.commit()
+    except Exception as e:
+        conexion.rollback()
+        print(f"Error al activar el alumno: {e}")
+        flash("Ocurrió un error al activar el alumno.", "danger")
+    finally:
+        cursor.close()
+        conexion.close()
+
+    flash("Alumno activado correctamente.", "success")
     return redirect(url_for("alumnos.alumnos"))

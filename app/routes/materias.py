@@ -84,16 +84,39 @@ def delete(id_materia):
     conexion = obtener_conexion()
     cursor = conexion.cursor()
 
-    query = "DELETE FROM materias WHERE id_materia = %s"
+    query = "UPDATE materias SET estado = 'inactivo' WHERE id_materia = %s"
     try:
         cursor.execute(query, (id_materia,))
         conexion.commit()
-        flash(f"Materia con id {id_materia} eliminada exitosamente", "success")
+        flash(f"Materia con id {id_materia} desactivada exitosamente", "success")
     except Exception as e:
         conexion.rollback()
-        flash("Error al eliminar la materia: " + str(e), "danger")
+        flash("Error al desactivar la materia: " + str(e), "danger")
     finally:
         cursor.close()
         conexion.close()
 
     return redirect(url_for("materias.materias"))
+
+
+@materias_bp.route("/activar_materia", methods=["POST"])
+@role_required("admin")
+def activar_materia():
+    if request.method == "POST":
+        materia_id = request.form["id_materia"]
+
+        # Conexión a la base de datos
+        conn = obtener_conexion()
+        cursor = conn.cursor()
+
+        # Actualizar el estado de la materia a "activo"
+        query = "UPDATE materias SET estado = 'activo' WHERE id_materia = %s"
+        cursor.execute(query, (materia_id,))
+        conn.commit()
+        flash(f"Materia con id {materia_id} activada exitosamente", "success")
+
+        cursor.close()
+        conn.close()
+
+        # Redirigir a la misma página después de activar la materia
+        return redirect(url_for("materias.materias"))

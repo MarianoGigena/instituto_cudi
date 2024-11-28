@@ -82,9 +82,12 @@ def login():
             session["user_id"] = user["id_usuario"]
             session["nombre"] = user["nombre"]
             session["role"] = user["role"]
-
-            flash("Inicio de sesión exitoso.", "success")
-            return redirect(url_for("main.index"))
+            if user["estado"] == "inactivo":
+                flash("Tu cuenta ha sido desactivada.", "danger")
+                return render_template("login.html")
+            else:
+                flash("Inicio de sesión exitoso.", "success")
+                return redirect(url_for("main.index"))
         else:
             flash("Usuario o contraseña incorrectos.", "danger")
 

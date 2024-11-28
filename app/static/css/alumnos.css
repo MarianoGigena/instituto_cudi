@@ -107,3 +107,10 @@ body {
     border-color: #ffeeba;
     /* Borde amarillo claro */
 }
+
+.form-label {
+    background-color: #212529;
+    color: white;
+    border-radius: 10px;
+    padding: 5px;
+}

@@ -23,6 +23,31 @@
     </ul>
     {% endif %}
     {% endwith %}
+
+    <!-- Filtros -->
+    <form method="GET" action="{{ url_for('profesores.filtros') }}">
+        <div class="row align-items-end mb-3">
+            <!-- Selector de estado -->
+            <div class="col-auto">
+                <label for="estado" class="form-label">Estado:</label>
+                <select name="estado" id="estado" class="form-control">
+                    <option value="">Seleccione un estado</option>
+                    {% for estado in estados %}
+                    <option value="{{ estado }}" {% if request.args.get('estado')==estado %}selected{% endif %}>
+                        {{ estado }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Botones para filtrar y limpiar -->
+            <div class="col-auto text-end">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+                <a href="{{ url_for('profesores.profesores') }}" class="btn btn-secondary">Limpiar</a>
+            </div>
+        </div>
+    </form>
+
     <div class="boton_agregar_alumno">
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">Agregar
             profesor</button>
@@ -80,7 +105,9 @@
                     <h5 class="card-title text-primary">Profesor: {{ profesor[1] }} {{ profesor[2] }}</h5>
                     <p class="card-text">
                         <strong>DNI:</strong> {{ profesor[0] }} <br>
-                        <strong>Materia:</strong> {{ profesor[3] }}
+                        <strong>Materia:</strong> {{ profesor[3] }} <br>
+                        <strong>Estado de la materia:</strong> {{ profesor[6] }} <br>
+                        <strong>Estado:</strong> {{ profesor[5] }}
                     </p>
                 </div>
                 <div class="card-footer text-center">
@@ -90,15 +117,26 @@
                         data-id_materia="{{ profesor[4] }}">
                         <i class="fas fa-pencil-alt"></i> Editar
                     </button>
+
+                    {% if profesor[5] == 'inactivo' %}
+                    <form action="{{ url_for('profesores.activar') }}" method="POST" class="d-inline">
+                        <input type="hidden" name="id_profesor_dni" value="{{ profesor[0] }}">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa-solid fa-check"></i> Activar
+                        </button>
+                    </form>
+                    {% else %}
                     <button type="button" class="btn btn-danger delete-btn ms-2" data-toggle="modal"
                         data-target="#deleteModal" data-id="{{ profesor[0] }}">
-                        <i class="fa-solid fa-trash-can"></i> Eliminar
+                        <i class="fa-solid fa-trash-can"></i> Desactivar
                     </button>
+                    {% endif %}
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
+
     <!-- Modal para editar el Profesor -->
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
         <div class="modal-dialog">

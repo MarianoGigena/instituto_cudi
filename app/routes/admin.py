@@ -25,7 +25,7 @@ def admin_panel():
         cursor = conexion.cursor()
 
         # Consulta a la tabla 'usuarios'
-        consulta = "SELECT id_usuario, nombre, password, role FROM usuarios"
+        consulta = "SELECT id_usuario, nombre, password, role, estado FROM usuarios"
         cursor.execute(consulta)
 
         # Obtener todos los resultados
@@ -103,7 +103,9 @@ def eliminar_usuario():
     try:
         # Consulta SQL para eliminar el usuario
         print(f"id {id_usuario}")
-        query = "DELETE FROM usuarios WHERE id_usuario = %s"
+        query = """UPDATE usuarios 
+        SET estado = 'inactivo' 
+        WHERE id_usuario = %s"""
         cursor.execute(query, (id_usuario,))
         conexion.commit()
 
@@ -111,7 +113,7 @@ def eliminar_usuario():
         if cursor.rowcount == 0:
             flash("No se encontró ningún usuario con ese ID.", "warning")
         else:
-            flash(f"Usuario {id_usuario} eliminado exitosamente.", "success")
+            flash(f"Usuario {id_usuario} desactivado exitosamente.", "success")
     except Exception as err:
         # Manejo de errores
         print(f"Error: {err}")
@@ -121,4 +123,31 @@ def eliminar_usuario():
         conexion.close()
 
     # Redirigir al panel de administración
+    return redirect(url_for("admin.admin_panel"))
+
+
+@admin_bp.route("/activar_usuario", methods=["POST"])
+def activar_usuario():
+    id_usuario = request.form.get("id_usuario")
+
+    if not id_usuario:
+        flash("No se proporcionó el ID del usuario", "warning")
+        return redirect(url_for("admin.admin_panel"))
+
+    conexion = obtener_conexion()
+    cursor = conexion.cursor()
+
+    try:
+        # Actualizar el estado del usuario a "activo"
+        query = "UPDATE usuarios SET estado = 'activo' WHERE id_usuario = %s"
+        cursor.execute(query, (id_usuario,))
+        conexion.commit()
+        flash("El usuario ha sido activado correctamente.", "success")
+    except Exception as e:
+        conexion.rollback()
+        flash(f"Error al activar el usuario: {e}", "danger")
+    finally:
+        cursor.close()
+        conexion.close()
+
     return redirect(url_for("admin.admin_panel"))

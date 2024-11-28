@@ -38,10 +38,23 @@
                     <h5 class="card-title text-primary">Usuario: {{ usuario[1] }}</h5>
                     <p class="card-text">
                         <strong>ID:</strong> {{ usuario[0] }} <br>
-                        <strong>Rol:</strong> {{ usuario[3] }}
+                        <strong>Rol:</strong> {{ usuario[3] }} <br>
+                        <strong>Estado:</strong> <span
+                            class="{% if usuario[4] == 'inactivo' %}text-danger fw-bold{% else %}text-success{% endif %}">
+                            {{ usuario[4] }}
+                        </span>
                     </p>
                 </div>
                 <div class="card-footer text-center">
+                    {% if usuario[4] == 'inactivo' %}
+                    <!-- Botón para activar usuario -->
+                    <form action="{{ url_for('admin.activar_usuario') }}" method="POST" class="d-inline">
+                        <input type="hidden" name="id_usuario" value="{{ usuario[0] }}">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa-solid fa-check"></i> Activar
+                        </button>
+                    </form>
+                    {% else %}
                     <!-- Botón para editar usuario -->
                     <button type="button" class="btn btn-warning edit-btn" data-toggle="modal" data-target="#editModal"
                         data-id_usuario="{{ usuario[0] }}" data-nombre="{{ usuario[1] }}"
@@ -51,8 +64,9 @@
                     <!-- Botón para eliminar usuario -->
                     <button type="button" class="btn btn-danger delete-btn ms-2" data-toggle="modal"
                         data-target="#deleteModal" data-id_usuario="{{ usuario[0] }}">
-                        <i class="fa-solid fa-trash-can"></i> Eliminar
+                        <i class="fa-solid fa-trash-can"></i> Desactivar
                     </button>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -106,7 +120,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deleteUserModalLabel">Eliminar Usuario</h5>
+                    <h5 class="modal-title" id="deleteUserModalLabel">Desactivar Usuario</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -118,7 +132,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                        <button type="submit" class="btn btn-danger">Desactivar</button>
                     </div>
                 </form>
             </div>

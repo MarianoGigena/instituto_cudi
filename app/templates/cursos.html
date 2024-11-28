@@ -174,10 +174,6 @@
 
 
                     <td class="botones_materias">
-                        <!-- <button type="button" class="btn btn-warning edit-btn" data-toggle="modal"
-                                data-target="#editModal" data-id_materia="{{ curso[0] }}" data-nombre="{{ curso[1] }}">
-                                <i class="fas fa-pencil-alt"></i>
-                            </button> -->
                         {% if curso[4] == 'regular' or curso[4] == 'Promociono' or curso[4] == 'A Final' or curso[4] ==
                         'Recursa' %}
                         <button type="button" class="btn btn-danger delete-btn ms-2" data-toggle="modal"
@@ -185,11 +181,17 @@
                             data-id_materia="{{curso[8]}}" data-materia="{{curso[3]}}">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
+                        {% elif curso[4] == 'libre' %}
+                        <form action="{{ url_for('cursos.cambiar_estado') }}" method="POST" class="d-inline">
+                            <input type="hidden" name="id_alumno_dni" value="{{ curso[0] }}">
+                            <input type="hidden" name="id_materia" value="{{ curso[8] }}">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa-solid fa-check"></i> Regularizar
+                            </button>
+                        </form>
                         {% endif %}
-
-
-
                     </td>
+
                 </tr>
                 {% endfor %}
             </tbody>
@@ -223,13 +225,31 @@
                         data-id_alumno_dni="{{ curso[0] }}" data-id_materia="{{ curso[8] }}">
                         <i class="fa-solid fa-award"></i>
                     </button>
-                    {% if curso[4] in ['regular', 'Promociono', 'A Final', 'Recursa'] %}
+                    <!-- {% if curso[4] in ['regular', 'Promociono', 'A Final', 'Recursa'] %}
                     <button title="Eliminar Inscripción" type="button" class="btn btn-danger delete-btn"
                         data-toggle="modal" data-target="#deleteModal" data-id_alumno_dni="{{ curso[0] }}"
                         data-id_materia="{{ curso[8] }}" data-materia="{{ curso[3] }}">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
-                    {% endif %}
+                    {% endif %} -->
+                    <td class="botones_materias">
+                        {% if curso[4] == 'regular' or curso[4] == 'Promociono' or curso[4] == 'A Final' or curso[4] ==
+                        'Recursa' %}
+                        <button type="button" class="btn btn-danger delete-btn ms-2" data-toggle="modal"
+                            data-target="#deleteModal" data-id_alumno_dni="{{ curso[0] }}"
+                            data-id_materia="{{curso[8]}}" data-materia="{{curso[3]}}">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                        {% elif curso[4] == 'libre' %}
+                        <form action="{{ url_for('cursos.cambiar_estado') }}" method="POST" class="d-inline">
+                            <input type="hidden" name="id_alumno_dni" value="{{ curso[0] }}">
+                            <input type="hidden" name="id_materia" value="{{ curso[8] }}">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fa-solid fa-check"></i> Regularizar
+                            </button>
+                        </form>
+                        {% endif %}
+                    </td>
                 </div>
             </div>
         </div>

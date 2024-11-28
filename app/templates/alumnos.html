@@ -29,6 +29,30 @@
     {% endif %}
     {% endwith %}
 
+    <!-- Filtros -->
+    <form method="GET" action="{{ url_for('alumnos.filtros') }}">
+        <div class="row align-items-end mb-3">
+            <!-- Selector de estado -->
+            <div class="col-auto">
+                <label for="estado" class="form-label">Estado:</label>
+                <select name="estado" id="estado" class="form-control">
+                    <option value="">Seleccione un estado</option>
+                    {% for estado in estados %}
+                    <option value="{{ estado }}" {% if request.args.get('estado')==estado %}selected{% endif %}>
+                        {{ estado }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Botones para filtrar y limpiar -->
+            <div class="col-auto text-end">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+                <a href="{{ url_for('alumnos.alumnos') }}" class="btn btn-secondary">Limpiar</a>
+            </div>
+        </div>
+    </form>
+
     <div class="boton_agregar_alumno">
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">Agregar
             alumno</button>
@@ -47,7 +71,7 @@
                             Nacimiento</button>
                     </th>
                     <th> <button onclick="ordenarTabla(4)" id="btn-genero" class="btn btn-link">Genero</button></th>
-
+                    <th>Estado</th>
                     <th>Acciones</th>
 
                 </tr>
@@ -60,7 +84,7 @@
                     <td>{{ alumno[2] }}</td>
                     <td>{{ alumno[3] }}</td>
                     <td>{{ alumno[4] }}</td>
-
+                    <td>{{ alumno[5] }}</td>
                     <td class="botones_jugadores">
                         <button title="Editar Alumno" type="button" class="btn btn-warning edit-btn" data-toggle="modal"
                             data-target="#editModal" data-id_alumno_dni="{{ alumno[0] }}" data-nombre="{{ alumno[1] }}"
@@ -68,10 +92,31 @@
                             data-genero="{{ alumno[4] }}">
                             <i class="fas fa-pencil-alt"></i>
                         </button>
+                        <!-- Mostrar el botón según el estado -->
+                        {% if alumno[5] == "inactivo" %}
+                        <!-- Botón de activar -->
+                        <form action="{{ url_for('alumnos.activar_alumno', id_alumno=alumno[0]) }}" method="POST"
+                            class="d-inline">
+                            <button title="Activar Alumno" type="submit" class="btn btn-success ms-2">
+                                <i class="fa-solid fa-user-check"></i>
+                            </button>
+                        </form>
+                        {% else %}
+                        <!-- Botón de borrar -->
                         <button title="Borrar Alumno" type="button" class="btn btn-danger delete-btn ms-2"
                             data-toggle="modal" data-target="#deleteModal" data-id="{{ alumno[0] }}">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
+                        {% endif %}
+
+                        <!-- Botón para inscribir -->
+
+                        <!-- <button title="Borrar Alumno" type="button" class="btn btn-danger delete-btn ms-2"
+                            data-toggle="modal" data-target="#deleteModal" data-id="{{ alumno[0] }}">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button> -->
+
+
                         <button title="Inscribir a Materia" type="button" class="btn btn-success ms-2 btnInscribir"
                             data-toggle="modal" data-target="#inscribirModal" data-dni="{{ alumno[0] }}" id="dniAlumno"
                             value="{{ alumno[0] }}" data-nombre_alumno="{{ alumno[1 ]}} {{ alumno[2] }}">
@@ -105,10 +150,22 @@
                         data-fecha_nacimiento="{{ alumno[3] }}" data-genero="{{ alumno[4] }}">
                         <i class="fas fa-pencil-alt"></i>
                     </button>
-                    <button title="Borrar Alumno" type="button" class="btn btn-danger delete-btn me-2"
+                    <!-- Mostrar el botón según el estado -->
+                    {% if alumno[5] == "inactivo" %}
+                    <!-- Botón de activar -->
+                    <form action="{{ url_for('alumnos.activar_alumno', id_alumno=alumno[0]) }}" method="POST"
+                        class="d-inline">
+                        <button title="Activar Alumno" type="submit" class="btn btn-success ms-2">
+                            <i class="fa-solid fa-user-check"></i>
+                        </button>
+                    </form>
+                    {% else %}
+                    <!-- Botón de borrar -->
+                    <button title="Borrar Alumno" type="button" class="btn btn-danger delete-btn ms-2"
                         data-toggle="modal" data-target="#deleteModal" data-id="{{ alumno[0] }}">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
+                    {% endif %}
                     <button title="Inscribir a Materia" type="button" class="btn btn-success btnInscribir"
                         data-toggle="modal" data-target="#inscribirModal" data-dni="{{ alumno[0] }}" id="dniAlumno"
                         value="{{ alumno[0] }}" data-nombre_alumno="{{ alumno[1] }} {{ alumno[2] }}">

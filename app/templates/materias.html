@@ -28,38 +28,46 @@
             materia</button>
     </div>
     <div class="table-responsive">
-
         <table class="table table-bordered border-secondary table-striped">
             <thead class="table-light">
                 <tr>
                     <th>ID </th>
                     <th>Nombre</th>
+                    <th>Estado</th>
                     <th>Acciones</th>
-
                 </tr>
             </thead>
             <tbody>
                 {% for materia in materias %}
-                <tr class="">
+                <tr>
                     <td>{{ materia[0] }}</td>
                     <td>{{ materia[1] }}</td>
+                    <td>{{ materia[2] }}</td>
                     <td class="botones_materias">
                         <button type="button" class="btn btn-warning edit-btn" data-toggle="modal"
                             data-target="#editModal" data-id_materia="{{ materia[0] }}" data-nombre="{{ materia[1] }}">
                             <i class="fas fa-pencil-alt"></i>
                         </button>
+                        {% if materia[2] == 'inactivo' %}
+                        <form action="{{ url_for('materias.activar_materia') }}" method="POST" class="d-inline">
+                            <input type="hidden" name="id_materia" value="{{ materia[0] }}">
+                            <button type="submit" class="btn btn-success ms-2">
+                                <i class="fa-solid fa-check"></i> Activar
+                            </button>
+                        </form>
+                        {% else %}
                         <button type="button" class="btn btn-danger delete-btn ms-2" data-toggle="modal"
                             data-target="#deleteModal" data-id="{{ materia[0] }}">
-                            <i class="fa-solid fa-trash-can"></i>
+                            <i class="fa-solid fa-trash-can"></i> Desactivar
                         </button>
-
-
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+
     <!-- Modal para agregar un nueva materia -->
     <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -75,11 +83,12 @@
                         <div class="form-group">
                             <label for="add-nombre">Nombre</label>
                             <input type="text" class="form-control" id="add-nombre" name="nombre" maxlength="30"
-                                minlength="4" pattern="^[A-Za-záéíóúÁÉÍÓÚñÑ\s]+$"
-                                title="La materia solo puede contener letras y espacios, y debe tener como máximo 30 caracteres."
+                                minlength="4" pattern="^[A-Za-záéíóúÁÉÍÓÚñÑ0-9\s]+$"
+                                title="El nombre puede contener letras, números y espacios, y debe tener como máximo 30 caracteres."
                                 required>
                         </div>
                     </div>
+
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
@@ -126,17 +135,17 @@
             <div class="modal-content">
                 <form id="deleteForm" method="POST">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="deleteModalLabel">Confirmar Eliminación</h5>
+                        <h5 class="modal-title" id="deleteModalLabel">Confirmar Desactivado</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        ¿Estás seguro de que deseas eliminar esta materia?
+                        ¿Estás seguro de que deseas desactivar esta materia?
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                        <button type="submit" class="btn btn-danger">Desactivar</button>
                     </div>
                 </form>
             </div>

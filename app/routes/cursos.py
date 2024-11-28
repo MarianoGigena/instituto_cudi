@@ -30,7 +30,8 @@ def ver_cursos():
             materias ON cursos.materias_id_materia = materias.id_materia
         WHERE 
             (alumnos.estado IS NULL OR alumnos.estado <> 'inactivo') 
-        AND (cursos.estado = 'regular' OR cursos.estado = 'A Final' OR cursos.estado = 'Promociono' OR cursos.estado = 'Recursa');
+        AND (cursos.estado = 'regular' OR cursos.estado = 'A Final' OR cursos.estado = 'Promociono' OR cursos.estado = 'Recursa')
+        AND materias.estado = 'activo';
     """
     cursor.execute("SELECT DISTINCT nombre FROM materias")
     materias = [row[0] for row in cursor.fetchall()]
@@ -254,7 +255,7 @@ def filtros():
             alumnos ON cursos.alumnos_id_alumno_dni = alumnos.id_alumno_dni
         JOIN 
             materias ON cursos.materias_id_materia = materias.id_materia
-        WHERE 1=1
+        WHERE materias.estado = 'activo'
     """
     params = []
 
@@ -294,6 +295,7 @@ def filtros():
 
 
 @cursos_bp.route("/cursos/eliminar_curso", methods=["POST"])
+@role_required("admin")
 def eliminar_curso():
     # Captura el ID del usuario desde el formulario
     id_alumno = request.form.get("id_alumno_dni")
@@ -343,4 +345,38 @@ def eliminar_curso():
         conexion.close()
 
     # Redirigir al panel de administración
+    return redirect(url_for("cursos.ver_cursos"))
+
+
+@cursos_bp.route("/cambiar_estado", methods=["POST"])
+@role_required("admin")
+def cambiar_estado():
+    id_alumno_dni = request.form.get("id_alumno_dni")
+    id_materia = request.form.get("id_materia")
+
+    if not id_alumno_dni or not id_materia:
+        flash("Datos incompletos para actualizar el estado", "warning")
+        return redirect(url_for("cursos.ver_cursos"))
+
+    conexion = obtener_conexion()
+    cursor = conexion.cursor()
+
+    try:
+        # Actualizar el estado a 'regular'
+        query = """
+        UPDATE cursos
+        SET estado = 'regular'
+        WHERE alumnos_id_alumno_dni = %s AND materias_id_materia = %s
+        """
+        cursor.execute(query, (id_alumno_dni, id_materia))
+        conexion.commit()
+        flash("El estado del alumno ha sido actualizado a 'regular'", "success")
+    except Exception as e:
+        conexion.rollback()
+        flash(f"Error al actualizar el estado: {e}", "danger")
+    finally:
+        cursor.close()
+        conexion.close()
+        actualizar_nota_final(id_alumno_dni, id_materia)
+
     return redirect(url_for("cursos.ver_cursos"))

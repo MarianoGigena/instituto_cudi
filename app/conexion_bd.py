@@ -15,5 +15,5 @@ def obtener_conexion2():
         host="127.0.0.1",
         user="root",
         password="3793",
-        database="instituto_cudi3",
+        database="instituto_cudi5",
     )
